@@ -1,0 +1,60 @@
+version: 2
+updates:
+  # Enable version updates for npm
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "dbillion"
+    assignees:
+      - "dbillion"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+    labels:
+      - "type: dependencies"
+      - "automerge"
+    # Group minor and patch updates
+    groups:
+      development-dependencies:
+        patterns:
+          - "*"
+        dependency-type: "development"
+      production-dependencies:
+        patterns:
+          - "*"
+        dependency-type: "production"
+    ignore:
+      # Ignore major version updates for stability
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+    allow:
+      # Allow security updates for all dependencies
+      - dependency-type: "all"
+        update-types: ["security"]
+      # Allow minor and patch updates
+      - dependency-type: "all"
+        update-types: ["version-update:semver-minor", "version-update:semver-patch"]
+
+  # Enable version updates for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "dbillion"
+    assignees:
+      - "dbillion"
+    commit-message:
+      prefix: "ci"
+      include: "scope"
+    labels:
+      - "type: ci"
+      - "automerge"

@@ -1,0 +1,74 @@
+# Configuration for automatic labeling of pull requests
+# https://github.com/actions/labeler
+
+# Source code changes
+"component: api":
+  - src/routes/**/*
+  - src/controllers/**/*
+  - src/middleware/**/*
+
+"component: backend":
+  - src/**/*
+  - "!src/public/**/*"
+
+"component: frontend":
+  - src/public/**/*
+  - "*.html"
+  - "*.css"
+  - "*.js"
+
+"component: database":
+  - src/models/**/*
+  - src/migrations/**/*
+  - "**/*schema*"
+  - "**/*migration*"
+
+# Documentation changes
+"type: documentation":
+  - docs/**/*
+  - "*.md"
+  - "README*"
+  - "CHANGELOG*"
+  - "CONTRIBUTING*"
+
+# Configuration changes
+"type: configuration":
+  - ".github/**/*"
+  - "package.json"
+  - "package-lock.json"
+  - "*.config.js"
+  - "*.config.json"
+  - ".eslintrc*"
+  - ".prettierrc*"
+  - ".editorconfig"
+  - "Dockerfile*"
+  - "docker-compose*"
+
+# Testing changes
+"type: testing":
+  - tests/**/*
+  - "**/*.test.js"
+  - "**/*.spec.js"
+  - jest.config.*
+
+# Dependencies
+"type: dependencies":
+  - package.json
+  - package-lock.json
+  - yarn.lock
+
+# Security
+"type: security":
+  - ".github/workflows/security.yml"
+  - "SECURITY.md"
+
+# Size labels based on file changes
+"size: small":
+  - any: ['**/*']
+    all: 
+      - '!**/*.{png,jpg,jpeg,gif,svg,ico,pdf,doc,docx,zip,tar,gz}'
+
+"size: large":
+  - any: ['src/**/*']
+    all:
+      - '**/*.{js,jsx,ts,tsx,py,java,go,rs,cpp,c,cs}'

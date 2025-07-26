@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 General Discussion
+    url: https://github.com/dbillion/ks-knowledge-sharing/discussions
+    about: Ask questions and discuss ideas with the community
+  - name: 🔒 Security Vulnerability
+    url: https://github.com/dbillion/ks-knowledge-sharing/security/advisories/new
+    about: Report a security vulnerability privately
+  - name: 📧 Contact Maintainers
+    url: mailto:support@example.com
+    about: Email the maintainers directly for sensitive issues

@@ -1,0 +1,90 @@
+name: Auto Label
+
+on:
+  issues:
+    types: [opened, edited]
+  pull_request:
+    types: [opened, edited, synchronize]
+
+jobs:
+  label:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Label issues and PRs
+        uses: actions/labeler@v4
+        with:
+          repo-token: '${{ secrets.GITHUB_TOKEN }}'
+          configuration-path: '.github/labeler.yml'
+
+  auto-label-by-content:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+      contents: read
+    steps:
+      - name: Label based on content
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue || context.payload.pull_request;
+            const title = issue.title.toLowerCase();
+            const body = issue.body ? issue.body.toLowerCase() : '';
+            const labels = [];
+
+            // Priority labels
+            if (title.includes('urgent') || title.includes('critical')) {
+              labels.push('priority: high');
+            } else if (title.includes('important')) {
+              labels.push('priority: medium');
+            }
+
+            // Type labels
+            if (title.includes('bug') || title.includes('error') || title.includes('fix')) {
+              labels.push('type: bug');
+            } else if (title.includes('feature') || title.includes('enhancement')) {
+              labels.push('type: feature');
+            } else if (title.includes('doc') || title.includes('documentation')) {
+              labels.push('type: documentation');
+            } else if (title.includes('test')) {
+              labels.push('type: testing');
+            }
+
+            // Component labels
+            if (title.includes('api') || body.includes('api')) {
+              labels.push('component: api');
+            } else if (title.includes('frontend') || title.includes('ui')) {
+              labels.push('component: frontend');
+            } else if (title.includes('backend')) {
+              labels.push('component: backend');
+            } else if (title.includes('database') || title.includes('db')) {
+              labels.push('component: database');
+            }
+
+            // Size labels
+            const difficultyWords = ['simple', 'easy', 'quick'];
+            const complexWords = ['complex', 'difficult', 'major'];
+            
+            if (difficultyWords.some(word => title.includes(word) || body.includes(word))) {
+              labels.push('size: small');
+            } else if (complexWords.some(word => title.includes(word) || body.includes(word))) {
+              labels.push('size: large');
+            } else {
+              labels.push('size: medium');
+            }
+
+            if (labels.length > 0) {
+              github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                labels: labels
+              });
+            }
