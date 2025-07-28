@@ -1,4 +1,26 @@
 /* Article Edit Component Styles */
+
+/* Quill Editor Reset - Prevent global style interference */
+:host ::ng-deep quill-editor {
+  .ql-toolbar,
+  .ql-container {
+    font-family: "Helvetica Neue", Arial, sans-serif !important;
+  }
+
+  .ql-toolbar * {
+    font-size: inherit !important;
+    line-height: inherit !important;
+  }
+
+  // Force all icons to proper sizes
+  .ql-toolbar svg {
+    width: 14px !important;
+    height: 14px !important;
+    max-width: 14px !important;
+    max-height: 14px !important;
+  }
+}
+
 .article-edit-container {
   min-height: 100vh;
   background-color: #fafafa;
@@ -199,7 +221,124 @@
 
     quill-editor {
       ::ng-deep {
-        .ql-container {
+        // Toolbar styling with precise icon control
+        .ql-toolbar.ql-snow {
+          border-top: 1px solid #ddd;
+          border-left: 1px solid #ddd;
+          border-right: 1px solid #ddd;
+          background-color: #fafafa;
+          padding: 8px;
+          line-height: 1;
+
+          .ql-formats {
+            margin-right: 8px;
+            display: inline-block;
+            vertical-align: top;
+
+            &:last-child {
+              margin-right: 0;
+            }
+          }
+
+          button {
+            width: 28px !important;
+            height: 28px !important;
+            padding: 0 !important;
+            margin: 1px !important;
+            border: none !important;
+            border-radius: 3px !important;
+            background: transparent !important;
+            color: #444 !important;
+            cursor: pointer !important;
+            display: inline-block !important;
+            float: none !important;
+            outline: none !important;
+            position: relative !important;
+            
+            &:hover {
+              background-color: #e3f2fd !important;
+              color: #1976d2 !important;
+            }
+
+            &.ql-active {
+              background-color: #1976d2 !important;
+              color: white !important;
+            }
+
+            // Control all SVG icons in buttons
+            svg {
+              width: 14px !important;
+              height: 14px !important;
+              max-width: 14px !important;
+              max-height: 14px !important;
+              display: block !important;
+              margin: auto !important;
+              position: absolute !important;
+              top: 50% !important;
+              left: 50% !important;
+              transform: translate(-50%, -50%) !important;
+            }
+
+            .ql-stroke {
+              stroke: currentColor !important;
+              stroke-width: 2 !important;
+              fill: none !important;
+            }
+
+            .ql-fill {
+              fill: currentColor !important;
+              stroke: none !important;
+            }
+          }
+
+          .ql-picker {
+            color: #444 !important;
+            display: inline-block !important;
+            float: none !important;
+            font-size: 14px !important;
+            font-weight: 500 !important;
+            height: 28px !important;
+            position: relative !important;
+
+            .ql-picker-label {
+              cursor: pointer !important;
+              display: inline-block !important;
+              height: 28px !important;
+              line-height: 28px !important;
+              outline: none !important;
+              position: relative !important;
+              vertical-align: top !important;
+              padding: 0 8px !important;
+              border: none !important;
+              border-radius: 3px !important;
+
+              &:hover {
+                background-color: #e3f2fd !important;
+                color: #1976d2 !important;
+              }
+
+              svg {
+                width: 12px !important;
+                height: 12px !important;
+                max-width: 12px !important;
+                max-height: 12px !important;
+                margin-left: 4px !important;
+                vertical-align: middle !important;
+              }
+            }
+
+            &.ql-expanded .ql-picker-label {
+              background-color: #1976d2 !important;
+              color: white !important;
+            }
+          }
+        }
+
+        // Container and editor styles
+        .ql-container.ql-snow {
+          border-bottom: 1px solid #ddd;
+          border-left: 1px solid #ddd;
+          border-right: 1px solid #ddd;
           min-height: 400px;
           font-size: 1rem;
           line-height: 1.6;
@@ -207,7 +346,7 @@
 
         .ql-editor {
           padding: 1.5rem;
-
+          
           &.ql-blank::before {
             color: #999;
             font-style: italic;
@@ -251,61 +390,25 @@
           }
         }
 
+        // Global safety rules for all toolbar content
         .ql-toolbar {
-          border-top: 1px solid #ddd;
-          border-left: 1px solid #ddd;
-          border-right: 1px solid #ddd;
-          background-color: #fafafa;
-
-          .ql-formats {
-            margin-right: 1rem;
+          * {
+            box-sizing: border-box !important;
           }
 
-          button {
-            width: 28px !important;
-            height: 28px !important;
-            padding: 3px !important;
-            
-            &:hover,
-            &:focus {
-              color: #1976d2;
-            }
-
-            svg {
-              width: 18px !important;
-              height: 18px !important;
-            }
-
-            .ql-stroke {
-              stroke-width: 2 !important;
-            }
-
-            .ql-fill {
-              fill: currentColor !important;
-            }
+          svg, img {
+            max-width: 14px !important;
+            max-height: 14px !important;
           }
 
-          .ql-picker {
-            width: auto !important;
-            height: 28px !important;
-            line-height: 28px !important;
-
-            .ql-picker-label {
-              height: 28px !important;
-              line-height: 28px !important;
-              padding: 0 8px !important;
-            }
+          // Prevent any dropdown arrows from being oversized
+          .ql-picker-label::before,
+          .ql-picker-label::after {
+            width: 8px !important;
+            height: 8px !important;
+            max-width: 8px !important;
+            max-height: 8px !important;
           }
-
-          .ql-active {
-            color: #1976d2 !important;
-          }
-        }
-
-        .ql-container {
-          border-bottom: 1px solid #ddd;
-          border-left: 1px solid #ddd;
-          border-right: 1px solid #ddd;
         }
       }
     }
