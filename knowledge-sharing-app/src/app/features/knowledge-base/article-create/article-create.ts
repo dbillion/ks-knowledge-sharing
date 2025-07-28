@@ -49,23 +49,23 @@ export class ArticleCreateComponent {
   constructor() {
     this.articleForm = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(3)]],
-      content: ['', [Validators.required, Validators.minLength(10)]],
       categoryId: ['', Validators.required],
-      tags: [''],
+      content: ['', [Validators.required, Validators.minLength(10)]],
       isPublished: [false]
     });
 
     this.loadCategories();
+    console.log('Article create component initialized'); // Debug log
   }
 
   private loadCategories(): void {
-    this.categoryService.getCategories().subscribe({
-      next: (categories: SimpleCategory[]) => {
+    this.categoryService.getActiveCategories().subscribe({
+      next: (categories) => {
         this.categories.set(categories);
+        console.log('Loaded categories for article creation:', categories); // Debug log
       },
-      error: (error: any) => {
+      error: (error) => {
         console.error('Error loading categories:', error);
-        this.snackBar.open('Error loading categories', 'Close', { duration: 3000 });
       }
     });
   }

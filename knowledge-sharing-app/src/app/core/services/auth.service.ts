@@ -38,7 +38,7 @@ export class AuthService {
     {
       id: 'user1',
       username: 'admin',
-      email: 'admin@company.com',
+      email: 'admin@knowledge.com',
       firstName: 'Admin',
       lastName: 'User',
       role: 'admin',
@@ -50,7 +50,7 @@ export class AuthService {
     {
       id: 'user2',
       username: 'editor',
-      email: 'editor@company.com',
+      email: 'editor@knowledge.com',
       firstName: 'Editor',
       lastName: 'User',
       role: 'editor',
@@ -62,7 +62,7 @@ export class AuthService {
     {
       id: 'user3',
       username: 'viewer',
-      email: 'viewer@company.com',
+      email: 'viewer@knowledge.com',
       firstName: 'Viewer',
       lastName: 'User',
       role: 'viewer',
@@ -108,7 +108,7 @@ export class AuthService {
     return new Observable(observer => {
       setTimeout(() => {
         const user = this.mockUsers.find(u => 
-          u.email === credentials.email && credentials.password === 'password'
+          u.email === credentials.email && credentials.password === 'password123'
         );
 
         if (user) {
@@ -170,6 +170,19 @@ export class AuthService {
     this.currentUser.set(null);
     localStorage.removeItem('currentUser');
     this.router.navigate(['/auth/login']);
+  }
+
+  getDefaultRouteForRole(role: string): string {
+    switch (role) {
+      case 'admin':
+        return '/categories';
+      case 'editor':
+        return '/knowledge/create';
+      case 'viewer':
+        return '/knowledge';
+      default:
+        return '/';
+    }
   }
 
   hasRole(roles: string[]): boolean {

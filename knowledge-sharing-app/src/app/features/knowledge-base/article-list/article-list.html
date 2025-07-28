@@ -75,7 +75,24 @@
       }
     </div>
 
-    <!-- Pagination -->
+    <!-- No Articles State -->
+  @if (!isLoading() && paginatedArticles().length === 0) {
+    <div class="empty-state">
+      <mat-icon class="empty-icon">article</mat-icon>
+      <h2>No Articles Found</h2>
+      <p>There are no published articles available at the moment.</p>
+      @if (canCreateArticles()) {
+        <button mat-raised-button 
+                color="primary" 
+                routerLink="/knowledge/create">
+          <mat-icon>add</mat-icon>
+          Create First Article
+        </button>
+      }
+    </div>
+  }
+
+  <!-- Pagination -->
     <mat-paginator 
       [length]="totalArticles()"
       [pageSize]="pageSize()"

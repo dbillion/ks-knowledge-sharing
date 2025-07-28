@@ -10,8 +10,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDividerModule } from '@angular/material/divider';
-import { AuthService } from '../../../core/services/auth';
-import { LoginCredentials } from '../../../core/models';
+import { AuthService } from '../../../core/services/auth.service';
+import { LoginCredentials } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -40,10 +40,7 @@ export class LoginComponent {
 
   loginForm: FormGroup;
   hidePassword = signal(true);
-  isLoading = this.authService.loading;
-
-  // Mock credentials for easy testing
-  mockCredentials = this.authService.getMockCredentials();
+  isLoading = this.authService.isLoading;
 
   constructor() {
     this.loginForm = this.fb.group({
@@ -56,34 +53,23 @@ export class LoginComponent {
     if (this.loginForm.valid) {
       const credentials: LoginCredentials = this.loginForm.value;
       
-      // Mock login implementation (replace with actual API call)
-      this.mockLogin(credentials);
+      this.authService.login(credentials).subscribe({
+        next: (user) => {
+          this.snackBar.open('Login successful!', 'Close', { duration: 3000 });
+          this.navigateBasedOnRole(user.role);
+        },
+        error: (error) => {
+          this.snackBar.open('Invalid email or password', 'Close', { duration: 5000 });
+        }
+      });
     } else {
       this.markFormGroupTouched();
     }
   }
 
-  private mockLogin(credentials: LoginCredentials): void {
-    // Simulate API call delay
-    setTimeout(() => {
-      const users = [
-        { email: 'admin@knowledge.com', password: 'password123', role: 'admin' },
-        { email: 'editor@knowledge.com', password: 'password123', role: 'editor' },
-        { email: 'viewer@knowledge.com', password: 'password123', role: 'viewer' }
-      ];
-
-      const user = users.find(u => 
-        u.email === credentials.email && 
-        u.password === credentials.password
-      );
-
-      if (user) {
-        this.snackBar.open('Login successful!', 'Close', { duration: 3000 });
-        this.router.navigate(['/']);
-      } else {
-        this.snackBar.open('Invalid email or password', 'Close', { duration: 5000 });
-      }
-    }, 1000);
+  private navigateBasedOnRole(role: string): void {
+    const defaultRoute = this.authService.getDefaultRouteForRole(role);
+    this.router.navigate([defaultRoute]);
   }
 
   onGuestLogin(): void {

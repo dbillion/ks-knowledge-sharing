@@ -29,6 +29,27 @@ export const routes: Routes = [
     ]
   },
   
+  // Profile route (protected)
+  {
+    path: 'profile',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/auth/profile/profile').then(m => m.ProfileComponent)
+  },
+  
+  // Settings route (protected)
+  {
+    path: 'settings',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/auth/profile/profile').then(m => m.ProfileComponent)
+  },
+  
+  // My Articles route (protected)
+  {
+    path: 'my-articles',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/knowledge-base/article-list/article-list').then(m => m.ArticleListComponent)
+  },
+  
   // Knowledge base routes (protected)
   {
     path: 'knowledge',

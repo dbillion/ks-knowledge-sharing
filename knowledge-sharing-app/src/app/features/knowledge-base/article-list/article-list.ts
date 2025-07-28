@@ -58,18 +58,28 @@ export class ArticleListComponent {
   private loadData(): void {
     this.isLoading.set(true);
     
-    // Load articles and categories in parallel
-    Promise.all([
-      this.knowledgeService.getPublishedArticles().toPromise(),
-      this.categoryService.getCategories().toPromise()
-    ]).then(([articles, categories]) => {
-      this.articles.set(articles || []);
-      this.categories.set(categories || []);
-      this.totalArticles.set(articles?.length || 0);
-      this.isLoading.set(false);
-    }).catch(error => {
-      console.error('Error loading data:', error);
-      this.isLoading.set(false);
+    // Load articles and categories
+    this.knowledgeService.getPublishedArticles().subscribe({
+      next: (articles) => {
+        this.articles.set(articles || []);
+        this.totalArticles.set(articles?.length || 0);
+        console.log('Loaded articles:', articles); // Debug log
+      },
+      error: (error) => {
+        console.error('Error loading articles:', error);
+      }
+    });
+
+    this.categoryService.getCategories().subscribe({
+      next: (categories) => {
+        this.categories.set(categories || []);
+        console.log('Loaded categories:', categories); // Debug log
+        this.isLoading.set(false);
+      },
+      error: (error) => {
+        console.error('Error loading categories:', error);
+        this.isLoading.set(false);
+      }
     });
   }
 

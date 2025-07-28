@@ -57,7 +57,7 @@
                 placeholder="Choose a unique username"
                 autocomplete="username">
               <mat-icon matSuffix>account_circle</mat-icon>
-              <mat-hint>3-20 characters, letters, numbers, and underscores only</mat-hint>
+              <mat-hint>3-20 characters</mat-hint>
               @if (registerForm.get('username')?.invalid && registerForm.get('username')?.touched) {
                 <mat-error>{{ getErrorMessage('username') }}</mat-error>
               }
@@ -115,7 +115,7 @@
                 </div>
               }
               
-              <mat-hint>At least 8 characters with uppercase, lowercase, number, and special character</mat-hint>
+              <mat-hint>At least 8 characters</mat-hint>
               @if (registerForm.get('password')?.invalid && registerForm.get('password')?.touched) {
                 <mat-error>{{ getErrorMessage('password') }}</mat-error>
               }
@@ -202,13 +202,16 @@
             <p class="social-text">Or sign up with</p>
             <div class="social-buttons">
               <button mat-icon-button class="social-button google" disabled>
-                <mat-icon svgIcon="google"></mat-icon>
+                <mat-icon>account_circle</mat-icon>
+                <span class="social-label">Google</span>
               </button>
               <button mat-icon-button class="social-button github" disabled>
-                <mat-icon svgIcon="github"></mat-icon>
+                <mat-icon>code</mat-icon>
+                <span class="social-label">GitHub</span>
               </button>
               <button mat-icon-button class="social-button microsoft" disabled>
-                <mat-icon svgIcon="microsoft"></mat-icon>
+                <mat-icon>business</mat-icon>
+                <span class="social-label">Microsoft</span>
               </button>
             </div>
             <p class="social-note">Social login coming soon</p>

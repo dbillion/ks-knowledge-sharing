@@ -51,19 +51,19 @@ export class RegisterComponent {
   registerForm: FormGroup = this.fb.group({
     firstName: ['', [
       Validators.required, 
-      Validators.minLength(2),
-      Validators.pattern(/^[a-zA-Z\s]*$/)
+      Validators.minLength(2)
+      // Removed strict pattern to allow more name formats
     ]],
     lastName: ['', [
       Validators.required, 
-      Validators.minLength(2),
-      Validators.pattern(/^[a-zA-Z\s]*$/)
+      Validators.minLength(2)
+      // Removed strict pattern to allow more name formats
     ]],
     username: ['', [
       Validators.required, 
       Validators.minLength(3),
-      Validators.maxLength(20),
-      Validators.pattern(/^[a-zA-Z0-9_]+$/)
+      Validators.maxLength(20)
+      // Removed strict pattern to allow more flexibility
     ]],
     email: ['', [
       Validators.required, 
@@ -72,8 +72,8 @@ export class RegisterComponent {
     ]],
     password: ['', [
       Validators.required, 
-      Validators.minLength(8),
-      this.passwordStrengthValidator
+      Validators.minLength(8)
+      // Removed strict password strength validator to make registration easier
     ]],
     confirmPassword: ['', [Validators.required]],
     acceptTerms: [false, [Validators.requiredTrue]]
@@ -83,7 +83,13 @@ export class RegisterComponent {
 
   // Computed properties
   canSubmit = computed(() => 
-    this.registerForm.valid && 
+    this.registerForm.get('firstName')?.valid && 
+    this.registerForm.get('lastName')?.valid && 
+    this.registerForm.get('username')?.valid && 
+    this.registerForm.get('email')?.valid && 
+    this.registerForm.get('password')?.value?.length >= 8 && 
+    this.registerForm.get('confirmPassword')?.value === this.registerForm.get('password')?.value &&
+    this.registerForm.get('acceptTerms')?.value === true &&
     !this.isLoading() && 
     !this.isRegistering()
   );
@@ -209,9 +215,7 @@ export class RegisterComponent {
     if (control?.hasError('pattern')) {
       return this.getPatternErrorMessage(fieldName);
     }
-    if (control?.hasError('passwordStrength')) {
-      return 'Password must contain uppercase, lowercase, number, and special character';
-    }
+    // Removed passwordStrength error as we simplified validation
     if (control?.hasError('passwordMismatch')) {
       return 'Passwords do not match';
     }
@@ -233,11 +237,6 @@ export class RegisterComponent {
 
   private getPatternErrorMessage(fieldName: string): string {
     switch (fieldName) {
-      case 'firstName':
-      case 'lastName':
-        return 'Name can only contain letters and spaces';
-      case 'username':
-        return 'Username can only contain letters, numbers, and underscores';
       case 'email':
         return 'Please enter a valid email address';
       default:

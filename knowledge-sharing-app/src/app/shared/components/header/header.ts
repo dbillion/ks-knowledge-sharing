@@ -11,7 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { AuthService } from '../../../core/services/auth';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -39,7 +39,7 @@ export class HeaderComponent {
   // Reactive state from auth service
   currentUser = this.authService.currentUser;
   isAuthenticated = this.authService.isAuthenticated;
-  isLoading = this.authService.loading;
+  isLoading = this.authService.isLoading;
   
   // Computed properties
   userDisplayName = computed(() => {

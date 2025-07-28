@@ -72,7 +72,7 @@
   .header-actions {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 12px;
     flex-shrink: 0;
 
     .user-button {
@@ -114,13 +114,99 @@
 
     button[mat-icon-button] {
       color: white;
+      
+      &:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+      
+      &.notification-button {
+        position: relative;
+        
+        .mat-icon {
+          color: white;
+        }
+        
+        &:hover {
+          background: rgba(255, 255, 255, 0.15);
+          
+          .mat-icon {
+            color: #ffd54f;
+          }
+        }
+      }
     }
 
     button[mat-raised-button] {
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
+      font-weight: 500;
+      border-radius: 24px;
+      
+      &[color="accent"] {
+        background-color: #ff6b35;
+        color: white;
+        border: 2px solid #ff6b35;
+        
+        &:hover {
+          background-color: #ff5722;
+          border-color: #ff5722;
+          transform: translateY(-1px);
+          box-shadow: 0 4px 8px rgba(255, 107, 53, 0.3);
+        }
+      }
     }
+
+    .auth-buttons {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      
+      .signup-button {
+        background-color: transparent !important;
+        color: white !important;
+        border: 2px solid white !important;
+        font-weight: 500;
+        
+        &:hover {
+          background-color: white !important;
+          color: #1976d2 !important;
+          transform: translateY(-1px);
+          box-shadow: 0 4px 8px rgba(255, 255, 255, 0.2);
+        }
+      }
+      
+      .login-button {
+        background-color: #ff6b35 !important;
+        color: white !important;
+        border: 2px solid #ff6b35 !important;
+        font-weight: 500;
+        
+        &:hover {
+          background-color: #ff5722 !important;
+          border-color: #ff5722 !important;
+          transform: translateY(-1px);
+          box-shadow: 0 4px 8px rgba(255, 107, 53, 0.3);
+        }
+      }
+    }
+  }
+}
+
+// Custom notification badge styling
+::ng-deep .mat-badge-content {
+  &.mat-badge-warn {
+    background-color: #ff5722 !important;
+    color: white !important;
+    font-weight: 600 !important;
+    font-size: 10px !important;
+    box-shadow: 0 2px 4px rgba(255, 87, 34, 0.3) !important;
+  }
+  
+  &.mat-badge-small {
+    width: 16px !important;
+    height: 16px !important;
+    line-height: 16px !important;
   }
 }
 
@@ -174,6 +260,23 @@
     .header-brand .app-title {
       display: none;
     }
+    
+    .header-actions {
+      .auth-buttons {
+        flex-direction: column-reverse;
+        gap: 4px;
+        
+        button {
+          min-width: auto;
+          padding: 6px 12px;
+          font-size: 0.875rem;
+          
+          .hide-on-mobile {
+            display: none;
+          }
+        }
+      }
+    }
   }
 }
 
@@ -191,6 +294,10 @@
 
     .header-actions {
       gap: 4px;
+      
+      .auth-buttons {
+        gap: 4px;
+      }
     }
   }
 }

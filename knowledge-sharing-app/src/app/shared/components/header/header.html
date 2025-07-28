@@ -40,7 +40,9 @@
         <button 
           mat-icon-button 
           [matBadge]="3" 
-          matBadgeColor="accent"
+          matBadgeColor="warn"
+          matBadgeSize="small"
+          class="notification-button"
           matTooltip="Notifications"
           (click)="onNotificationsClick()"
         >
@@ -99,15 +101,26 @@
           </button>
         </mat-menu>
       } @else {
-        <button 
-          mat-raised-button 
-          color="accent" 
-          routerLink="/auth/login"
-          matTooltip="Sign In"
-        >
-          <mat-icon>login</mat-icon>
-          <span class="hide-on-mobile">Sign In</span>
-        </button>
+        <div class="auth-buttons">
+          <button 
+            mat-stroked-button 
+            routerLink="/auth/register"
+            class="signup-button"
+            matTooltip="Create Account"
+          >
+            <mat-icon>person_add</mat-icon>
+            <span class="hide-on-mobile">Sign Up</span>
+          </button>
+          <button 
+            mat-raised-button 
+            routerLink="/auth/login"
+            class="login-button"
+            matTooltip="Sign In"
+          >
+            <mat-icon>login</mat-icon>
+            <span class="hide-on-mobile">Sign In</span>
+          </button>
+        </div>
       }
 
       <!-- Loading indicator -->
