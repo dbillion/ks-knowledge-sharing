@@ -1,0 +1,103 @@
+<mat-card class="article-create-card">
+  <mat-card-header>
+    <mat-card-title>Create New Article</mat-card-title>
+    <mat-card-subtitle>Share your knowledge with the team</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <form [formGroup]="articleForm" (ngSubmit)="onSubmit()" class="article-form">
+      <!-- Title Field -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Article Title</mat-label>
+        <input matInput 
+               placeholder="Enter a descriptive title" 
+               formControlName="title"
+               [disabled]="isLoading()">
+        <mat-error *ngIf="articleForm.get('title')?.hasError('required')">
+          Title is required
+        </mat-error>
+        <mat-error *ngIf="articleForm.get('title')?.hasError('minlength')">
+          Title must be at least 3 characters long
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Category Selection -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Category</mat-label>
+        <mat-select formControlName="categoryId" [disabled]="isLoading()">
+          <mat-option value="">-- Select Category --</mat-option>
+          <mat-option *ngFor="let category of categories()" [value]="category.id">
+            {{ category.name }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="articleForm.get('categoryId')?.hasError('required')">
+          Category is required
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Content Field -->
+      <mat-form-field appearance="outline" class="full-width content-field">
+        <mat-label>Article Content</mat-label>
+        <textarea matInput 
+                  placeholder="Write your article content here..."
+                  formControlName="content"
+                  rows="15"
+                  [disabled]="isLoading()"></textarea>
+        <mat-error *ngIf="articleForm.get('content')?.hasError('required')">
+          Content is required
+        </mat-error>
+        <mat-error *ngIf="articleForm.get('content')?.hasError('minlength')">
+          Content must be at least 10 characters long
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Tags Input -->
+      <div class="tags-section">
+        <mat-form-field appearance="outline" class="tags-input">
+          <mat-label>Add Tags</mat-label>
+          <input matInput 
+                 #tagInput
+                 placeholder="Enter tag and press Enter"
+                 (keyup.enter)="addTag(tagInput)"
+                 [disabled]="isLoading()">
+          <mat-hint>Press Enter to add tags</mat-hint>
+        </mat-form-field>
+        
+        <div class="tags-display" *ngIf="tags().length > 0">
+          <mat-chip-listbox>
+            <mat-chip-option *ngFor="let tag of tags()" 
+                           (removed)="removeTag(tag)"
+                           [removable]="!isLoading()">
+              {{ tag }}
+              <mat-icon matChipRemove *ngIf="!isLoading()">cancel</mat-icon>
+            </mat-chip-option>
+          </mat-chip-listbox>
+        </div>
+      </div>
+
+      <!-- Publish Option -->
+      <div class="publish-section">
+        <mat-checkbox formControlName="isPublished" [disabled]="isLoading()">
+          Publish immediately
+        </mat-checkbox>
+      </div>
+    </form>
+  </mat-card-content>
+
+  <mat-card-actions align="end">
+    <button mat-button 
+            type="button" 
+            (click)="onCancel()"
+            [disabled]="isLoading()">
+      Cancel
+    </button>
+    <button mat-raised-button 
+            color="primary" 
+            type="submit"
+            (click)="onSubmit()"
+            [disabled]="!articleForm.valid || isLoading()">
+      <mat-icon *ngIf="isLoading()">hourglass_empty</mat-icon>
+      {{ isLoading() ? 'Creating...' : 'Create Article' }}
+    </button>
+  </mat-card-actions>
+</mat-card>

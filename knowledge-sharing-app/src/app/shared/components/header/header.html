@@ -1,1 +1,119 @@
-<p>header works!</p>
+<mat-toolbar color="primary" class="app-header">
+  <div class="header-container">
+    <!-- Logo and Title -->
+    <div class="header-brand">
+      <button mat-icon-button routerLink="/" matTooltip="Home">
+        <mat-icon>library_books</mat-icon>
+      </button>
+      <span class="app-title">Knowledge Sharing</span>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="header-search">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-icon matPrefix>search</mat-icon>
+        <input 
+          matInput 
+          placeholder="Search knowledge base..." 
+          (keyup.enter)="onSearch($event)"
+        />
+      </mat-form-field>
+    </div>
+
+    <!-- Actions -->
+    <div class="header-actions">
+      <!-- Create Article Button (for authenticated users) -->
+      @if (isAuthenticated()) {
+        <button 
+          mat-raised-button 
+          color="accent" 
+          routerLink="/knowledge/create"
+          matTooltip="Create New Article"
+        >
+          <mat-icon>add</mat-icon>
+          <span class="hide-on-mobile">New Article</span>
+        </button>
+      }
+
+      <!-- Notifications -->
+      @if (isAuthenticated()) {
+        <button 
+          mat-icon-button 
+          [matBadge]="3" 
+          matBadgeColor="accent"
+          matTooltip="Notifications"
+          (click)="onNotificationsClick()"
+        >
+          <mat-icon>notifications</mat-icon>
+        </button>
+      }
+
+      <!-- User Menu or Login Button -->
+      @if (isAuthenticated() && currentUser(); as user) {
+        <button 
+          mat-button 
+          [matMenuTriggerFor]="userMenu" 
+          class="user-button"
+          matTooltip="User Menu"
+        >
+          @if (user.avatar) {
+            <img 
+              [src]="user.avatar" 
+              [alt]="userDisplayName()"
+              class="user-avatar"
+            />
+          } @else {
+            <div class="user-initials">{{ userInitials() }}</div>
+          }
+          <span class="user-name hide-on-mobile">{{ userDisplayName() }}</span>
+          <mat-icon>arrow_drop_down</mat-icon>
+        </button>
+        
+        <mat-menu #userMenu="matMenu">
+          <div class="user-info">
+            <div class="user-name">{{ userDisplayName() }}</div>
+            <div class="user-role">{{ user.role | titlecase }}</div>
+          </div>
+          <mat-divider></mat-divider>
+          
+          <button mat-menu-item routerLink="/profile" (click)="onProfileClick()">
+            <mat-icon>person</mat-icon>
+            <span>Profile</span>
+          </button>
+          
+          <button mat-menu-item routerLink="/settings">
+            <mat-icon>settings</mat-icon>
+            <span>Settings</span>
+          </button>
+          
+          <button mat-menu-item routerLink="/my-articles">
+            <mat-icon>article</mat-icon>
+            <span>My Articles</span>
+          </button>
+          
+          <mat-divider></mat-divider>
+          
+          <button mat-menu-item (click)="onLogout()">
+            <mat-icon>logout</mat-icon>
+            <span>Logout</span>
+          </button>
+        </mat-menu>
+      } @else {
+        <button 
+          mat-raised-button 
+          color="accent" 
+          routerLink="/auth/login"
+          matTooltip="Sign In"
+        >
+          <mat-icon>login</mat-icon>
+          <span class="hide-on-mobile">Sign In</span>
+        </button>
+      }
+
+      <!-- Loading indicator -->
+      @if (isLoading()) {
+        <mat-spinner diameter="24"></mat-spinner>
+      }
+    </div>
+  </div>
+</mat-toolbar>

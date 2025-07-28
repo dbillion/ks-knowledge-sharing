@@ -1,0 +1,227 @@
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  gap: 20px;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  padding: 0;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  border-radius: 12px;
+
+  mat-card-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 32px 24px;
+    border-radius: 12px 12px 0 0;
+    margin: 0;
+
+    .login-header {
+      text-align: center;
+      width: 100%;
+
+      .login-icon {
+        font-size: 48px;
+        width: 48px;
+        height: 48px;
+        margin-bottom: 16px;
+        opacity: 0.9;
+      }
+
+      h1 {
+        margin: 0 0 8px 0;
+        font-size: 28px;
+        font-weight: 300;
+      }
+
+      p {
+        margin: 0;
+        opacity: 0.8;
+        font-size: 14px;
+      }
+    }
+  }
+
+  mat-card-content {
+    padding: 32px 24px;
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .full-width {
+      width: 100%;
+    }
+
+    .login-button {
+      height: 48px;
+      font-size: 16px;
+      font-weight: 500;
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+
+      .button-spinner {
+        ::ng-deep circle {
+          stroke: white;
+        }
+      }
+    }
+
+    .login-divider {
+      display: flex;
+      align-items: center;
+      margin: 32px 0 24px 0;
+      gap: 16px;
+
+      span {
+        font-size: 14px;
+        color: rgba(0, 0, 0, 0.6);
+        white-space: nowrap;
+      }
+
+      mat-divider {
+        flex: 1;
+      }
+    }
+
+    .demo-accounts {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 24px;
+
+      .demo-button {
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-weight: 500;
+      }
+    }
+
+    .login-footer {
+      text-align: center;
+      border-top: 1px solid rgba(0, 0, 0, 0.12);
+      padding-top: 24px;
+
+      p {
+        margin: 8px 0;
+        font-size: 14px;
+
+        a {
+          text-decoration: none;
+          font-weight: 500;
+        }
+      }
+    }
+  }
+}
+
+.demo-info {
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+
+  mat-card-content {
+    padding: 20px;
+
+    h3 {
+      margin: 0 0 12px 0;
+      color: #333;
+      font-size: 18px;
+      font-weight: 500;
+    }
+
+    p {
+      margin: 0 0 12px 0;
+      color: #666;
+      font-size: 14px;
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 20px;
+      
+      li {
+        margin-bottom: 8px;
+        font-size: 14px;
+        color: #555;
+
+        strong {
+          color: #333;
+        }
+      }
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 480px) {
+  .login-container {
+    padding: 16px;
+  }
+
+  .login-card {
+    max-width: none;
+
+    mat-card-header {
+      padding: 24px 20px;
+
+      .login-header {
+        .login-icon {
+          font-size: 40px;
+          width: 40px;
+          height: 40px;
+        }
+
+        h1 {
+          font-size: 24px;
+        }
+      }
+    }
+
+    mat-card-content {
+      padding: 24px 20px;
+    }
+  }
+
+  .demo-info {
+    max-width: none;
+  }
+}
+
+// Form field customization
+::ng-deep {
+  .mat-mdc-form-field {
+    .mat-mdc-form-field-flex {
+      border-radius: 8px;
+    }
+
+    .mat-mdc-form-field-prefix .mat-icon {
+      color: rgba(0, 0, 0, 0.6);
+      margin-right: 12px;
+    }
+  }
+
+  .mat-mdc-raised-button {
+    border-radius: 8px;
+  }
+
+  .mat-mdc-outlined-button {
+    border-radius: 8px;
+  }
+}

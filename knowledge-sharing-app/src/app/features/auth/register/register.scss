@@ -1,0 +1,452 @@
+/* Register Component Styles */
+.register-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 2rem;
+
+  .register-card-wrapper {
+    width: 100%;
+    max-width: 480px;
+  }
+}
+
+/* Register Card */
+.register-card {
+  padding: 0;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  background: white;
+  overflow: hidden;
+
+  mat-card-header {
+    background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+    color: white;
+    padding: 2rem;
+    margin: 0;
+
+    .header-content {
+      text-align: center;
+      width: 100%;
+
+      mat-card-title {
+        font-size: 2rem;
+        font-weight: 600;
+        margin: 0 0 0.5rem 0;
+        color: white;
+      }
+
+      mat-card-subtitle {
+        font-size: 1rem;
+        color: rgba(255, 255, 255, 0.9);
+        margin: 0;
+      }
+    }
+  }
+
+  mat-card-content {
+    padding: 2rem;
+
+    app-loading-spinner {
+      display: flex;
+      justify-content: center;
+      margin: 2rem 0;
+    }
+  }
+}
+
+/* Register Form */
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  .name-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+
+    mat-form-field {
+      margin: 0;
+    }
+  }
+
+  mat-form-field {
+    width: 100%;
+
+    .mat-mdc-form-field-icon-suffix {
+      color: #666;
+    }
+
+    &.mat-focused {
+      .mat-mdc-form-field-icon-suffix {
+        color: #1976d2;
+      }
+    }
+
+    .mat-mdc-form-field-hint-wrapper {
+      padding-top: 0.5rem;
+    }
+  }
+
+  .password-strength {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 0.5rem;
+    padding: 0 1rem;
+
+    .strength-bar {
+      flex: 1;
+      height: 4px;
+      background-color: #e0e0e0;
+      border-radius: 2px;
+      overflow: hidden;
+
+      .strength-fill {
+        height: 100%;
+        transition: all 0.3s ease;
+        border-radius: 2px;
+      }
+    }
+
+    .strength-label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      min-width: 80px;
+      text-align: right;
+    }
+  }
+
+  .terms-section {
+    margin: 0.5rem 0;
+
+    mat-checkbox {
+      font-size: 0.875rem;
+      line-height: 1.4;
+
+      .terms-link {
+        color: #1976d2;
+        text-decoration: none;
+        font-weight: 500;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+
+    .terms-error {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #d32f2f;
+      font-size: 0.75rem;
+      margin-top: 0.5rem;
+
+      mat-icon {
+        font-size: 1rem;
+        width: 1rem;
+        height: 1rem;
+      }
+    }
+  }
+
+  .register-button {
+    height: 48px;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 1rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+
+    mat-spinner {
+      margin-right: 0.5rem;
+    }
+
+    &:disabled {
+      opacity: 0.6;
+    }
+
+    &:not(:disabled):hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(25, 118, 210, 0.3);
+    }
+  }
+}
+
+/* Card Actions */
+.card-actions {
+  padding: 0 2rem 2rem 2rem;
+
+  mat-divider {
+    margin-bottom: 1.5rem;
+  }
+
+  .login-prompt {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.875rem;
+    color: #666;
+
+    .login-link {
+      font-weight: 600;
+      text-transform: none;
+    }
+  }
+
+  .social-login {
+    text-align: center;
+
+    .social-text {
+      margin: 0 0 1rem 0;
+      font-size: 0.875rem;
+      color: #666;
+    }
+
+    .social-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+
+      .social-button {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        border: 2px solid #e0e0e0;
+        background: white;
+        color: #666;
+        transition: all 0.3s ease;
+
+        &:hover:not(:disabled) {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        &.google {
+          &:hover:not(:disabled) {
+            border-color: #db4437;
+            color: #db4437;
+          }
+        }
+
+        &.github {
+          &:hover:not(:disabled) {
+            border-color: #333;
+            color: #333;
+          }
+        }
+
+        &.microsoft {
+          &:hover:not(:disabled) {
+            border-color: #0078d4;
+            color: #0078d4;
+          }
+        }
+
+        &:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+      }
+    }
+
+    .social-note {
+      margin: 0;
+      font-size: 0.75rem;
+      color: #999;
+      font-style: italic;
+    }
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .register-container {
+    padding: 1rem;
+    align-items: flex-start;
+    padding-top: 2rem;
+
+    .register-card-wrapper {
+      max-width: 100%;
+    }
+  }
+
+  .register-card {
+    mat-card-header {
+      padding: 1.5rem;
+
+      .header-content {
+        mat-card-title {
+          font-size: 1.5rem;
+        }
+
+        mat-card-subtitle {
+          font-size: 0.875rem;
+        }
+      }
+    }
+
+    mat-card-content {
+      padding: 1.5rem;
+    }
+  }
+
+  .register-form {
+    gap: 1rem;
+
+    .name-row {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .password-strength {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.5rem;
+
+      .strength-label {
+        text-align: left;
+        min-width: auto;
+      }
+    }
+  }
+
+  .card-actions {
+    padding: 0 1.5rem 1.5rem 1.5rem;
+
+    .social-buttons {
+      gap: 0.75rem;
+
+      .social-button {
+        width: 44px;
+        height: 44px;
+      }
+    }
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .register-container {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  }
+
+  .register-card {
+    background: #1e1e1e;
+    color: #e0e0e0;
+
+    mat-card-header {
+      background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+    }
+
+    .terms-section {
+      .terms-link {
+        color: #64b5f6;
+      }
+    }
+
+    .social-login {
+      .social-text {
+        color: #b0b0b0;
+      }
+
+      .social-buttons {
+        .social-button {
+          background: #2e2e2e;
+          border-color: #444;
+          color: #e0e0e0;
+
+          &:hover:not(:disabled) {
+            background: #3e3e3e;
+          }
+        }
+      }
+
+      .social-note {
+        color: #666;
+      }
+    }
+
+    .login-prompt {
+      color: #b0b0b0;
+    }
+  }
+}
+
+/* Animation and Transitions */
+.register-card {
+  animation: slideInUp 0.6s ease-out;
+}
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Form Field Animations */
+mat-form-field {
+  transition: all 0.3s ease;
+}
+
+button {
+  transition: all 0.3s ease;
+}
+
+/* Focus States */
+.register-form {
+  mat-form-field.mat-focused {
+    transform: scale(1.02);
+  }
+}
+
+/* Custom Scrollbar */
+.register-container {
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.5);
+    }
+  }
+}
+
+/* Success and Error States */
+::ng-deep .success-snackbar {
+  background-color: #4caf50 !important;
+  color: white !important;
+}
+
+::ng-deep .error-snackbar {
+  background-color: #f44336 !important;
+  color: white !important;
+}
+
+/* Loading State */
+.mat-mdc-progress-spinner {
+  --mdc-circular-progress-active-indicator-color: white;
+}

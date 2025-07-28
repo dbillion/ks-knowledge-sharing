@@ -1,0 +1,196 @@
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  .header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 16px;
+  }
+
+  .header-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+
+    .app-title {
+      font-size: 1.25rem;
+      font-weight: 500;
+      color: white;
+    }
+  }
+
+  .header-search {
+    flex: 1;
+    max-width: 500px;
+    margin: 0 24px;
+
+    .search-field {
+      width: 100%;
+      
+      ::ng-deep {
+        .mat-mdc-form-field-flex {
+          background: rgba(255, 255, 255, 0.1);
+          border-radius: 24px;
+        }
+
+        .mat-mdc-text-field-wrapper {
+          padding: 0 16px;
+        }
+
+        .mat-mdc-form-field-infix {
+          border: none;
+          padding: 12px 0;
+        }
+
+        .mat-mdc-input-element {
+          color: white;
+          
+          &::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+          }
+        }
+
+        .mat-mdc-form-field-subscript-wrapper {
+          display: none;
+        }
+
+        .mat-icon {
+          color: rgba(255, 255, 255, 0.7);
+        }
+      }
+    }
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+
+    .user-button {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 24px;
+      color: white;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .user-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      .user-initials {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 500;
+        font-size: 14px;
+        color: white;
+      }
+
+      .user-name {
+        font-weight: 500;
+      }
+    }
+
+    button[mat-icon-button] {
+      color: white;
+    }
+
+    button[mat-raised-button] {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+  }
+}
+
+// User menu styling
+::ng-deep .mat-mdc-menu-panel {
+  .user-info {
+    padding: 16px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    margin-bottom: 8px;
+
+    .user-name {
+      font-weight: 500;
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+
+    .user-role {
+      font-size: 14px;
+      color: rgba(0, 0, 0, 0.6);
+      text-transform: capitalize;
+    }
+  }
+
+  .mat-mdc-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .mat-icon {
+      margin: 0;
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .app-header {
+    .header-container {
+      padding: 0 8px;
+    }
+
+    .header-search {
+      margin: 0 16px;
+      max-width: none;
+    }
+
+    .hide-on-mobile {
+      display: none;
+    }
+
+    .header-brand .app-title {
+      display: none;
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .app-header {
+    .header-search {
+      margin: 0 8px;
+      
+      .search-field {
+        ::ng-deep .mat-mdc-text-field-wrapper {
+          padding: 0 12px;
+        }
+      }
+    }
+
+    .header-actions {
+      gap: 4px;
+    }
+  }
+}

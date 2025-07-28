@@ -1,7 +1,7 @@
-import { TestBed } from '@angular/core/testing';
-import { HttpInterceptorFn } from '@angular/common/http';
+import { *Component } from '@angular/core/testing';
+import { *Component } from '@angular/common/http';
 
-import { authInterceptor } from './auth-interceptor';
+import { *Component } from './auth-interceptor';
 
 describe('authInterceptor', () => {
   const interceptor: HttpInterceptorFn = (req, next) => 

@@ -1,1 +1,220 @@
-<p>register works!</p>
+<div class="register-container">
+  <div class="register-card-wrapper">
+    <mat-card class="register-card">
+      <mat-card-header>
+        <div class="header-content">
+          <mat-card-title>Create Account</mat-card-title>
+          <mat-card-subtitle>Join our knowledge sharing platform</mat-card-subtitle>
+        </div>
+      </mat-card-header>
+
+      <mat-card-content>
+        <!-- Loading State -->
+        @if (isLoading()) {
+          <app-loading-spinner 
+            message="Creating your account..."
+            [diameter]="40">
+          </app-loading-spinner>
+        } @else {
+          
+          <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
+            
+            <!-- Name Fields Row -->
+            <div class="name-row">
+              <mat-form-field appearance="outline">
+                <mat-label>First Name</mat-label>
+                <input 
+                  matInput 
+                  formControlName="firstName" 
+                  placeholder="Enter your first name"
+                  autocomplete="given-name">
+                <mat-icon matSuffix>person</mat-icon>
+                @if (registerForm.get('firstName')?.invalid && registerForm.get('firstName')?.touched) {
+                  <mat-error>{{ getErrorMessage('firstName') }}</mat-error>
+                }
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Last Name</mat-label>
+                <input 
+                  matInput 
+                  formControlName="lastName" 
+                  placeholder="Enter your last name"
+                  autocomplete="family-name">
+                <mat-icon matSuffix>person</mat-icon>
+                @if (registerForm.get('lastName')?.invalid && registerForm.get('lastName')?.touched) {
+                  <mat-error>{{ getErrorMessage('lastName') }}</mat-error>
+                }
+              </mat-form-field>
+            </div>
+
+            <!-- Username Field -->
+            <mat-form-field appearance="outline">
+              <mat-label>Username</mat-label>
+              <input 
+                matInput 
+                formControlName="username" 
+                placeholder="Choose a unique username"
+                autocomplete="username">
+              <mat-icon matSuffix>account_circle</mat-icon>
+              <mat-hint>3-20 characters, letters, numbers, and underscores only</mat-hint>
+              @if (registerForm.get('username')?.invalid && registerForm.get('username')?.touched) {
+                <mat-error>{{ getErrorMessage('username') }}</mat-error>
+              }
+            </mat-form-field>
+
+            <!-- Email Field -->
+            <mat-form-field appearance="outline">
+              <mat-label>Email Address</mat-label>
+              <input 
+                matInput 
+                formControlName="email" 
+                type="email"
+                placeholder="Enter your email address"
+                autocomplete="email">
+              <mat-icon matSuffix>email</mat-icon>
+              @if (registerForm.get('email')?.invalid && registerForm.get('email')?.touched) {
+                <mat-error>{{ getErrorMessage('email') }}</mat-error>
+              }
+            </mat-form-field>
+
+            <!-- Password Field -->
+            <mat-form-field appearance="outline">
+              <mat-label>Password</mat-label>
+              <input 
+                matInput 
+                formControlName="password" 
+                [type]="hidePassword() ? 'password' : 'text'"
+                placeholder="Create a strong password"
+                autocomplete="new-password">
+              <button 
+                mat-icon-button 
+                matSuffix 
+                type="button"
+                (click)="togglePasswordVisibility()"
+                [attr.aria-label]="'Hide password'"
+                [attr.aria-pressed]="hidePassword()">
+                <mat-icon>{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+              </button>
+              
+              <!-- Password Strength Indicator -->
+              @if (registerForm.get('password')?.value) {
+                <div class="password-strength">
+                  <div class="strength-bar">
+                    <div 
+                      class="strength-fill" 
+                      [style.width.%]="getPasswordStrengthIndicator().strength * 20"
+                      [style.background-color]="getPasswordStrengthIndicator().color">
+                    </div>
+                  </div>
+                  <span 
+                    class="strength-label"
+                    [style.color]="getPasswordStrengthIndicator().color">
+                    {{ getPasswordStrengthIndicator().label }}
+                  </span>
+                </div>
+              }
+              
+              <mat-hint>At least 8 characters with uppercase, lowercase, number, and special character</mat-hint>
+              @if (registerForm.get('password')?.invalid && registerForm.get('password')?.touched) {
+                <mat-error>{{ getErrorMessage('password') }}</mat-error>
+              }
+            </mat-form-field>
+
+            <!-- Confirm Password Field -->
+            <mat-form-field appearance="outline">
+              <mat-label>Confirm Password</mat-label>
+              <input 
+                matInput 
+                formControlName="confirmPassword" 
+                [type]="hideConfirmPassword() ? 'password' : 'text'"
+                placeholder="Confirm your password"
+                autocomplete="new-password">
+              <button 
+                mat-icon-button 
+                matSuffix 
+                type="button"
+                (click)="toggleConfirmPasswordVisibility()"
+                [attr.aria-label]="'Hide password'"
+                [attr.aria-pressed]="hideConfirmPassword()">
+                <mat-icon>{{ hideConfirmPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+              </button>
+              @if (registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched) {
+                <mat-error>{{ getErrorMessage('confirmPassword') }}</mat-error>
+              }
+            </mat-form-field>
+
+            <!-- Terms and Conditions -->
+            <div class="terms-section">
+              <mat-checkbox formControlName="acceptTerms">
+                I agree to the 
+                <a href="/terms" target="_blank" class="terms-link">Terms of Service</a> 
+                and 
+                <a href="/privacy" target="_blank" class="terms-link">Privacy Policy</a>
+              </mat-checkbox>
+              @if (registerForm.get('acceptTerms')?.invalid && registerForm.get('acceptTerms')?.touched) {
+                <div class="terms-error">
+                  <mat-icon>error</mat-icon>
+                  <span>You must accept the terms and conditions to continue</span>
+                </div>
+              }
+            </div>
+
+            <!-- Submit Button -->
+            <button 
+              mat-raised-button 
+              color="primary" 
+              type="submit"
+              class="register-button"
+              [disabled]="!canSubmit()">
+              @if (isRegistering()) {
+                <mat-spinner diameter="20"></mat-spinner>
+                <span>Creating Account...</span>
+              } @else {
+                <ng-container>
+                  <mat-icon>person_add</mat-icon>
+                  <span>Create Account</span>
+                </ng-container>
+              }
+            </button>
+
+          </form>
+          
+        }
+      </mat-card-content>
+
+      <mat-card-actions>
+        <div class="card-actions">
+          <mat-divider></mat-divider>
+          
+          <div class="login-prompt">
+            <span>Already have an account?</span>
+            <button 
+              mat-button 
+              color="primary" 
+              (click)="onLoginClick()"
+              class="login-link">
+              Sign In
+            </button>
+          </div>
+
+          <div class="social-login">
+            <p class="social-text">Or sign up with</p>
+            <div class="social-buttons">
+              <button mat-icon-button class="social-button google" disabled>
+                <mat-icon svgIcon="google"></mat-icon>
+              </button>
+              <button mat-icon-button class="social-button github" disabled>
+                <mat-icon svgIcon="github"></mat-icon>
+              </button>
+              <button mat-icon-button class="social-button microsoft" disabled>
+                <mat-icon svgIcon="microsoft"></mat-icon>
+              </button>
+            </div>
+            <p class="social-note">Social login coming soon</p>
+          </div>
+        </div>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>

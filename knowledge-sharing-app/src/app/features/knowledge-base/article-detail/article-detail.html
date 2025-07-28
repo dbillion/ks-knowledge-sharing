@@ -1,0 +1,139 @@
+<div class="article-detail-container">
+  <!-- Loading State -->
+  @if (isLoading()) {
+    <div class="loading-container">
+      <mat-spinner></mat-spinner>
+      <p>Loading article...</p>
+    </div>
+  }
+
+  <!-- Error State -->
+  @if (isError()) {
+    <div class="error-container">
+      <mat-icon class="error-icon">error_outline</mat-icon>
+      <h2>{{ errorMessage() }}</h2>
+      <button mat-raised-button color="primary" (click)="onBack()">
+        <mat-icon>arrow_back</mat-icon>
+        Back to Articles
+      </button>
+    </div>
+  }
+
+  <!-- Article Content -->
+  @if (!isLoading() && !isError() && article()) {
+    <article class="article-content">
+      <!-- Article Header -->
+      <header class="article-header">
+        <div class="header-actions">
+          <button mat-icon-button (click)="onBack()" matTooltip="Back to articles">
+            <mat-icon>arrow_back</mat-icon>
+          </button>
+          
+          <div class="action-buttons">
+            <button mat-icon-button (click)="onShare()" matTooltip="Share article">
+              <mat-icon>share</mat-icon>
+            </button>
+            
+            @if (canEdit()) {
+              <button mat-button [matMenuTriggerFor]="actionsMenu" matTooltip="More actions">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              
+              <mat-menu #actionsMenu="matMenu">
+                <button mat-menu-item (click)="onEdit()">
+                  <mat-icon>edit</mat-icon>
+                  <span>Edit Article</span>
+                </button>
+                
+                <button mat-menu-item (click)="onTogglePublished()">
+                  <mat-icon>{{ article()?.isPublished ? 'visibility_off' : 'visibility' }}</mat-icon>
+                  <span>{{ article()?.isPublished ? 'Unpublish' : 'Publish' }}</span>
+                </button>
+                
+                @if (canDelete()) {
+                  <mat-divider></mat-divider>
+                  <button mat-menu-item (click)="onDelete()" class="delete-action">
+                    <mat-icon>delete</mat-icon>
+                    <span>Delete Article</span>
+                  </button>
+                }
+              </mat-menu>
+            }
+          </div>
+        </div>
+
+        <div class="article-metadata">
+          <h1 class="article-title">{{ article()?.title }}</h1>
+          
+          <div class="metadata-row">
+            @if (category()) {
+              <span class="category-badge">{{ category()?.name }}</span>
+            }
+            
+            <span class="publication-status" 
+                  [class.published]="article()?.isPublished"
+                  [class.draft]="!article()?.isPublished">
+              {{ article()?.isPublished ? 'Published' : 'Draft' }}
+            </span>
+          </div>
+
+          <div class="metadata-row">
+            <span class="date-info">
+              Created: {{ formatDate(article()?.createdAt!) }}
+            </span>
+            
+            @if (article()?.updatedAt !== article()?.createdAt) {
+              <span class="date-info">
+                Updated: {{ formatDate(article()?.updatedAt!) }}
+              </span>
+            }
+            
+            <span class="reading-time">
+              {{ getReadingTime(article()?.content!) }} min read
+            </span>
+          </div>
+
+          @if (article()?.tags && article()!.tags.length > 0) {
+            <div class="tags-section">
+              <mat-chip-set>
+                @for (tag of article()!.tags; track tag) {
+                  <mat-chip>{{ tag }}</mat-chip>
+                }
+              </mat-chip-set>
+            </div>
+          }
+        </div>
+      </header>
+
+      <!-- Article Body -->
+      <section class="article-body">
+        <div class="content-wrapper">
+          <div class="article-text" [innerHTML]="article()?.content"></div>
+        </div>
+      </section>
+
+      <!-- Article Footer -->
+      <footer class="article-footer">
+        <div class="footer-actions">
+          @if (canEdit()) {
+            <button mat-raised-button color="primary" (click)="onEdit()">
+              <mat-icon>edit</mat-icon>
+              Edit Article
+            </button>
+          }
+          
+          <button mat-stroked-button (click)="onBack()">
+            <mat-icon>list</mat-icon>
+            Back to Articles
+          </button>
+        </div>
+
+        <!-- Related Articles Section (Placeholder) -->
+        <div class="related-section">
+          <h3>Related Articles</h3>
+          <p class="placeholder-text">Related articles feature coming soon...</p>
+        </div>
+      </footer>
+    </article>
+  }
+</div>

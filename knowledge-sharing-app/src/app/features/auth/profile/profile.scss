@@ -1,0 +1,312 @@
+.profile-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem;
+  min-height: calc(100vh - 120px);
+}
+
+.profile-header {
+  margin-bottom: 2rem;
+
+  .profile-summary-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    
+    .mat-mdc-card-header {
+      .user-avatar {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 64px;
+        height: 64px;
+        
+        mat-icon {
+          font-size: 2.5rem;
+          width: 2.5rem;
+          height: 2.5rem;
+          color: white;
+        }
+      }
+      
+      .mat-mdc-card-title {
+        color: white;
+        font-size: 1.5rem;
+        font-weight: 500;
+      }
+      
+      .mat-mdc-card-subtitle {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 1rem;
+      }
+    }
+    
+    .mat-mdc-card-content {
+      p {
+        margin: 0 0 0.5rem 0;
+        font-size: 1rem;
+        opacity: 0.9;
+      }
+      
+      .member-since {
+        font-size: 0.875rem;
+        opacity: 0.7;
+      }
+    }
+  }
+}
+
+.profile-tabs {
+  .mat-mdc-tab-group {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .tab-content {
+    padding: 2rem;
+    
+    mat-card {
+      border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+      
+      .mat-mdc-card-header {
+        .mat-mdc-card-title {
+          color: #2c3e50;
+          font-size: 1.25rem;
+          font-weight: 600;
+        }
+        
+        .mat-mdc-card-subtitle {
+          color: #666;
+          font-size: 0.875rem;
+        }
+      }
+    }
+  }
+}
+
+// Form Styles
+.form-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  
+  mat-form-field {
+    flex: 1;
+  }
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+  
+  button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    
+    mat-spinner {
+      margin-right: 0.5rem;
+    }
+  }
+}
+
+// Password Requirements
+.password-requirements {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 4px;
+  border-left: 4px solid #2196f3;
+  
+  h4 {
+    margin: 0 0 0.5rem 0;
+    color: #2c3e50;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+  
+  ul {
+    margin: 0;
+    padding-left: 1.5rem;
+    
+    li {
+      margin: 0.25rem 0;
+      font-size: 0.875rem;
+      color: #666;
+    }
+  }
+}
+
+// Preferences Styles
+.preferences-section {
+  margin: 2rem 0;
+  
+  h3 {
+    margin: 0 0 1rem 0;
+    color: #2c3e50;
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+  
+  .preference-item {
+    margin: 1.5rem 0;
+    
+    mat-slide-toggle {
+      margin-bottom: 0.5rem;
+    }
+    
+    .preference-description {
+      margin: 0;
+      font-size: 0.875rem;
+      color: #666;
+      line-height: 1.4;
+    }
+  }
+}
+
+// Account Management Styles
+.account-section {
+  margin: 2rem 0;
+  
+  h3 {
+    margin: 0 0 1rem 0;
+    color: #2c3e50;
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+  
+  p {
+    margin: 0 0 1rem 0;
+    color: #666;
+    line-height: 1.5;
+  }
+  
+  button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  &.danger-zone {
+    h3 {
+      color: #f44336;
+    }
+    
+    p {
+      color: #d32f2f;
+      font-weight: 500;
+    }
+  }
+}
+
+// Material Design Customizations
+.mat-mdc-form-field {
+  width: 100%;
+  
+  .mat-mdc-form-field-suffix {
+    mat-icon {
+      color: #666;
+    }
+  }
+}
+
+.mat-mdc-tab-group {
+  .mat-mdc-tab-label {
+    font-weight: 500;
+    
+    &.mdc-tab--active {
+      color: #1976d2;
+    }
+  }
+}
+
+.mat-mdc-card {
+  .mat-mdc-card-content {
+    padding: 1.5rem;
+  }
+}
+
+// Success/Error Snackbar Styles
+::ng-deep {
+  .success-snackbar {
+    background-color: #4caf50;
+    color: white;
+  }
+  
+  .error-snackbar {
+    background-color: #f44336;
+    color: white;
+  }
+  
+  .warning-snackbar {
+    background-color: #ff9800;
+    color: white;
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .profile-container {
+    padding: 1rem;
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+    
+    button {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+  
+  .tab-content {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-header {
+    .profile-summary-card {
+      .mat-mdc-card-header {
+        flex-direction: column;
+        text-align: center;
+        
+        .user-avatar {
+          margin: 0 auto 1rem auto;
+        }
+      }
+    }
+  }
+  
+  .preferences-section {
+    .preference-item {
+      mat-slide-toggle {
+        width: 100%;
+      }
+    }
+  }
+}
+
+// Loading Spinner Center
+.loading-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+// Divider Spacing
+mat-divider {
+  margin: 1.5rem 0;
+}

@@ -1,1 +1,141 @@
-<p>login works!</p>
+<div class="login-container">
+  <mat-card class="login-card">
+    <mat-card-header>
+      <div class="login-header">
+        <mat-icon class="login-icon">library_books</mat-icon>
+        <h1>Knowledge Sharing</h1>
+        <p>Sign in to access the knowledge base</p>
+      </div>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <!-- Email Field -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email</mat-label>
+          <mat-icon matPrefix>email</mat-icon>
+          <input 
+            matInput 
+            type="email" 
+            formControlName="email"
+            placeholder="Enter your email"
+            autocomplete="email"
+          />
+          <mat-error *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+            {{ getEmailErrorMessage() }}
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Password Field -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Password</mat-label>
+          <mat-icon matPrefix>lock</mat-icon>
+          <input 
+            matInput 
+            [type]="hidePassword() ? 'password' : 'text'"
+            formControlName="password"
+            placeholder="Enter your password"
+            autocomplete="current-password"
+          />
+          <button 
+            mat-icon-button 
+            matSuffix 
+            type="button"
+            (click)="togglePasswordVisibility()"
+            [attr.aria-label]="'Hide password'"
+            [attr.aria-pressed]="hidePassword()"
+          >
+            <mat-icon>{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          <mat-error *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+            {{ getPasswordErrorMessage() }}
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Login Button -->
+        <button 
+          mat-raised-button 
+          color="primary" 
+          type="submit"
+          class="full-width login-button"
+          [disabled]="isLoading()"
+        >
+          @if (isLoading()) {
+            <mat-spinner diameter="20" class="button-spinner"></mat-spinner>
+            Signing in...
+          } @else {
+            <ng-container>
+              <mat-icon>login</mat-icon>
+              Sign In
+            </ng-container>
+          }
+        </button>
+      </form>
+
+      <div class="login-divider">
+        <mat-divider></mat-divider>
+        <span>Demo Accounts</span>
+        <mat-divider></mat-divider>
+      </div>
+
+      <!-- Demo Account Buttons -->
+      <div class="demo-accounts">
+        <button 
+          mat-stroked-button 
+          color="accent" 
+          class="demo-button"
+          (click)="onAdminLogin()"
+          [disabled]="isLoading()"
+        >
+          <mat-icon>admin_panel_settings</mat-icon>
+          Admin Demo
+        </button>
+
+        <button 
+          mat-stroked-button 
+          color="accent" 
+          class="demo-button"
+          (click)="onEditorLogin()"
+          [disabled]="isLoading()"
+        >
+          <mat-icon>edit</mat-icon>
+          Editor Demo
+        </button>
+
+        <button 
+          mat-stroked-button 
+          color="accent" 
+          class="demo-button"
+          (click)="onGuestLogin()"
+          [disabled]="isLoading()"
+        >
+          <mat-icon>visibility</mat-icon>
+          Viewer Demo
+        </button>
+      </div>
+
+      <div class="login-footer">
+        <p>
+          Don't have an account?
+          <a routerLink="/auth/register" mat-button color="primary">Sign Up</a>
+        </p>
+        <p>
+          <a routerLink="/auth/forgot-password" mat-button color="primary">Forgot Password?</a>
+        </p>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Demo Instructions -->
+  <mat-card class="demo-info">
+    <mat-card-content>
+      <h3>Demo Instructions</h3>
+      <p>Use the demo buttons above or these credentials:</p>
+      <ul>
+        <li><strong>Admin:</strong> admin&#64;knowledge.com / password123</li>
+        <li><strong>Editor:</strong> editor&#64;knowledge.com / password123</li>
+        <li><strong>Viewer:</strong> viewer&#64;knowledge.com / password123</li>
+      </ul>
+    </mat-card-content>
+  </mat-card>
+</div>

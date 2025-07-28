@@ -1,1 +1,247 @@
-<p>search-interface works!</p>
+<div class="search-container">
+  <!-- Search Header -->
+  <div class="search-header">
+    <h1>Knowledge Search</h1>
+    <p class="search-subtitle">Find articles, guides, and documentation</p>
+  </div>
+
+  <!-- Main Search Bar -->
+  <div class="search-bar-container">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Search knowledge base...</mat-label>
+      <input matInput 
+             [formControl]="searchControl" 
+             placeholder="Enter keywords, topics, or questions"
+             (keyup.enter)="onSearch()">
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+    
+    <button mat-raised-button 
+            color="primary" 
+            (click)="onSearch()"
+            [disabled]="!searchControl.value">
+      Search
+    </button>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="quick-actions">
+    <button mat-stroked-button 
+            (click)="toggleFilters()"
+            [color]="showFilters() ? 'primary' : 'default'">
+      <mat-icon>filter_list</mat-icon>
+      Filters
+    </button>
+    
+    <button mat-stroked-button 
+            (click)="toggleHistory()"
+            [disabled]="searchHistory().length === 0">
+      <mat-icon>history</mat-icon>
+      History
+    </button>
+    
+    <button mat-stroked-button 
+            (click)="saveCurrentSearch()"
+            [disabled]="!hasQuery()">
+      <mat-icon>bookmark</mat-icon>
+      Save Search
+    </button>
+    
+    <button mat-stroked-button 
+            (click)="exportResults()"
+            [disabled]="!hasResults()">
+      <mat-icon>download</mat-icon>
+      Export
+    </button>
+  </div>
+
+  <!-- Popular Searches -->
+  @if (!hasQuery() && popularSearches.length > 0) {
+    <div class="popular-searches">
+      <h3>Popular Searches</h3>
+      <div class="search-chips">
+        @for (search of popularSearches; track search) {
+          <mat-chip (click)="searchControl.setValue(search); onSearch()">
+            {{ search }}
+          </mat-chip>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- Search History Panel -->
+  @if (showHistory() && searchHistory().length > 0) {
+    <mat-card class="history-panel">
+      <mat-card-header>
+        <mat-card-title>Search History</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-list>
+          @for (query of searchHistory(); track query) {
+            <mat-list-item (click)="selectFromHistory(query)">
+              <mat-icon matListItemIcon>history</mat-icon>
+              <span matListItemTitle>{{ query }}</span>
+            </mat-list-item>
+          }
+        </mat-list>
+      </mat-card-content>
+    </mat-card>
+  }
+
+  <!-- Saved Searches Panel -->
+  @if (savedSearches().length > 0) {
+    <mat-card class="saved-searches">
+      <mat-card-header>
+        <mat-card-title>Saved Searches</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-list>
+          @for (saved of savedSearches(); track saved.id) {
+            <mat-list-item>
+              <mat-icon matListItemIcon>bookmark</mat-icon>
+              <div matListItemTitle (click)="loadSavedSearch(saved.id)" class="saved-search-item">
+                <strong>{{ saved.name }}</strong>
+                <small>{{ saved.query }}</small>
+              </div>
+              <button mat-icon-button 
+                      (click)="deleteSavedSearch(saved.id)"
+                      matListItemMeta>
+                <mat-icon>delete</mat-icon>
+              </button>
+            </mat-list-item>
+          }
+        </mat-list>
+      </mat-card-content>
+    </mat-card>
+  }
+
+  <!-- Advanced Filters -->
+  @if (showFilters()) {
+    <mat-expansion-panel class="filters-panel" expanded>
+      <mat-expansion-panel-header>
+        <mat-panel-title>Advanced Filters</mat-panel-title>
+        <mat-panel-description>
+          Refine your search results
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+
+      <div class="filter-content">
+        <!-- Published Only Filter -->
+        <div class="filter-section">
+          <mat-checkbox 
+            [checked]="searchService.currentFilters().publishedOnly"
+            (change)="onPublishedOnlyToggle()">
+            Published articles only
+          </mat-checkbox>
+        </div>
+
+        <!-- Categories Filter -->
+        <div class="filter-section">
+          <h4>Categories</h4>
+          <div class="filter-chips">
+            @for (category of categories(); track category.id) {
+              <mat-chip 
+                [class.selected]="isCategorySelected(category.id)"
+                (click)="onCategoryToggle(category.id)">
+                {{ category.name }}
+              </mat-chip>
+            }
+          </div>
+        </div>
+
+        <!-- Tags Filter -->
+        <div class="filter-section">
+          <h4>Tags</h4>
+          <div class="filter-chips">
+            @for (tag of availableTags(); track tag) {
+              <mat-chip 
+                [class.selected]="isTagSelected(tag)"
+                (click)="onTagToggle(tag)">
+                {{ tag }}
+              </mat-chip>
+            }
+          </div>
+        </div>
+
+        <!-- Filter Actions -->
+        <div class="filter-actions">
+          <button mat-button (click)="clearFilters()">
+            Clear All Filters
+          </button>
+        </div>
+      </div>
+    </mat-expansion-panel>
+  }
+
+  <!-- Search Results Summary -->
+  @if (hasQuery()) {
+    <div class="results-summary">
+      @if (isSearching()) {
+        <div class="loading-state">
+          <mat-spinner diameter="20"></mat-spinner>
+          <span>Searching...</span>
+        </div>
+      } @else {
+        <p>{{ resultSummary() }}</p>
+      }
+    </div>
+  }
+
+  <!-- Search Results -->
+  @if (hasResults()) {
+    <div class="search-results">
+      @for (article of searchResults().articles; track article.id) {
+        <mat-card class="result-card" [routerLink]="['/articles', article.id]">
+          <mat-card-header>
+            <mat-card-title>{{ article.title }}</mat-card-title>
+            <mat-card-subtitle>
+              {{ getCategoryName(article.categoryId) }} • 
+              {{ formatDate(article.updatedAt) }}
+            </mat-card-subtitle>
+          </mat-card-header>
+          
+          <mat-card-content>
+            <p class="article-preview">{{ getArticlePreview(article.content) }}</p>
+            
+            @if (article.tags.length > 0) {
+              <div class="article-tags">
+                @for (tag of article.tags; track tag) {
+                  <mat-chip class="article-tag">{{ tag }}</mat-chip>
+                }
+              </div>
+            }
+          </mat-card-content>
+          
+          <mat-card-actions>
+            <button mat-button color="primary">
+              <mat-icon>visibility</mat-icon>
+              View Article
+            </button>
+          </mat-card-actions>
+        </mat-card>
+      }
+    </div>
+  }
+
+  <!-- No Results State -->
+  @if (hasQuery() && !isSearching() && !hasResults()) {
+    <div class="no-results">
+      <mat-icon class="no-results-icon">search_off</mat-icon>
+      <h3>No results found</h3>
+      <p>Try adjusting your search terms or filters</p>
+      
+      @if (searchResults().suggestions.length > 0) {
+        <div class="suggestions">
+          <p>Did you mean:</p>
+          <div class="suggestion-chips">
+            @for (suggestion of searchResults().suggestions; track suggestion) {
+              <mat-chip (click)="searchControl.setValue(suggestion); onSearch()">
+                {{ suggestion }}
+              </mat-chip>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

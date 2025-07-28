@@ -1,6 +1,6 @@
 ---
 description: 'Strategic planning and architecture assistant focused on thoughtful analysis before implementation. Helps developers understand codebases, clarify requirements, and develop comprehensive implementation strategies.'
-tools: ['codebase', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'problems', 'search', 'searchResults', 'usages', 'vscodeAPI']
+tools: ['changes', 'codebase', 'editFiles', 'extensions', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runNotebooks', 'runTasks', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'zapier mcp', 'context 7', 'sequential-thinking', 'github', 'Framelink Figma MCP', 'taskmaster-ai', 'exa', 'memory', '@21st-dev/magic', 'n8n-mcp', 'zapier', 'pylance mcp server', 'review', 'reviewStaged', 'reviewUnstaged', 'dtdUri', 'activePullRequest', 'copilotCodingAgent', 'exportMarp', 'configurePythonEnvironment', 'getPythonEnvironmentInfo', 'getPythonExecutableCommand', 'installPythonPackage', 'configureNotebook', 'installNotebookPackages', 'listNotebookPackages', 'websearch']
 ---
 
 # Plan Mode - Strategic Planning & Architecture Assistant

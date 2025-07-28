@@ -1,6 +1,6 @@
 ---
 description: 'Provide principal-level software engineering guidance with focus on engineering excellence, technical leadership, and pragmatic implementation.'
-tools: ['changes', 'codebase', 'editFiles', 'extensions', 'fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runTasks', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'github']
+tools: ['changes', 'codebase', 'editFiles', 'extensions', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runTasks', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'zapier mcp', 'context 7', 'sequential-thinking', 'github', 'Framelink Figma MCP', 'taskmaster-ai', 'exa', 'memory', '@21st-dev/magic', 'n8n-mcp', 'zapier', 'pylance mcp server', 'review', 'reviewStaged', 'reviewUnstaged', 'websearch']
 ---
 # Principal software engineer mode instructions
 

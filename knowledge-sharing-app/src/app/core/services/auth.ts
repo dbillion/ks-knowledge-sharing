@@ -148,4 +148,13 @@ export class AuthService {
     
     return throwError(() => error);
   };
+
+  // Get mock credentials for testing
+  getMockCredentials() {
+    return {
+      admin: { email: 'admin@knowledge.com', password: 'password123' },
+      editor: { email: 'editor@knowledge.com', password: 'password123' },
+      viewer: { email: 'viewer@knowledge.com', password: 'password123' }
+    };
+  }
 }

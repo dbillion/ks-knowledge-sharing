@@ -1,0 +1,359 @@
+<div class="profile-container">
+  <div class="profile-header">
+    <mat-card class="profile-summary-card">
+      <mat-card-header>
+        <div class="user-avatar" mat-card-avatar>
+          <mat-icon>account_circle</mat-icon>
+        </div>
+        <mat-card-title>{{ currentUser()?.firstName }} {{ currentUser()?.lastName }}</mat-card-title>
+        <mat-card-subtitle>{{ getRoleDisplayName(currentUser()?.role!) }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <p>{{ currentUser()?.email }}</p>
+        <span class="member-since">
+          Member since {{ currentUser()?.createdAt | date:'MMM yyyy' }}
+        </span>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  @if (isLoading()) {
+    <app-loading-spinner 
+      message="Loading profile data..."
+      [diameter]="40">
+    </app-loading-spinner>
+  } @else {
+    <mat-tab-group class="profile-tabs" animationDuration="300ms">
+      
+      <!-- Profile Information Tab -->
+      <mat-tab label="Profile Information">
+        <div class="tab-content">
+          <mat-card>
+            <mat-card-header>
+              <mat-card-title>Personal Information</mat-card-title>
+              <mat-card-subtitle>Update your basic profile information</mat-card-subtitle>
+            </mat-card-header>
+            
+            <mat-card-content>
+              <form [formGroup]="profileForm" (ngSubmit)="onUpdateProfile()">
+                <div class="form-row">
+                  <mat-form-field appearance="outline">
+                    <mat-label>First Name</mat-label>
+                    <input matInput formControlName="firstName" placeholder="Enter your first name">
+                    <mat-icon matSuffix>person</mat-icon>
+                    @if (profileForm.get('firstName')?.invalid && profileForm.get('firstName')?.touched) {
+                      <mat-error>{{ getErrorMessage(profileForm, 'firstName') }}</mat-error>
+                    }
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Last Name</mat-label>
+                    <input matInput formControlName="lastName" placeholder="Enter your last name">
+                    <mat-icon matSuffix>person</mat-icon>
+                    @if (profileForm.get('lastName')?.invalid && profileForm.get('lastName')?.touched) {
+                      <mat-error>{{ getErrorMessage(profileForm, 'lastName') }}</mat-error>
+                    }
+                  </mat-form-field>
+                </div>
+
+                <div class="form-row">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Username</mat-label>
+                    <input matInput formControlName="username" placeholder="Enter your username">
+                    <mat-icon matSuffix>alternate_email</mat-icon>
+                    @if (profileForm.get('username')?.invalid && profileForm.get('username')?.touched) {
+                      <mat-error>{{ getErrorMessage(profileForm, 'username') }}</mat-error>
+                    }
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Email Address</mat-label>
+                    <input matInput formControlName="email" type="email" placeholder="Enter your email">
+                    <mat-icon matSuffix>email</mat-icon>
+                    @if (profileForm.get('email')?.invalid && profileForm.get('email')?.touched) {
+                      <mat-error>{{ getErrorMessage(profileForm, 'email') }}</mat-error>
+                    }
+                  </mat-form-field>
+                </div>
+
+                <div class="form-row">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Role</mat-label>
+                    <input matInput formControlName="role" readonly>
+                    <mat-icon matSuffix>security</mat-icon>
+                    <mat-hint>Your role is assigned by an administrator</mat-hint>
+                  </mat-form-field>
+                </div>
+
+                <div class="form-actions">
+                  <button 
+                    mat-raised-button 
+                    color="primary" 
+                    type="submit"
+                    [disabled]="!hasChanges() || profileForm.invalid || isSaving()">
+                    @if (isSaving()) {
+                      <mat-spinner diameter="16"></mat-spinner>
+                      <span>Saving...</span>
+                    } @else {
+                      <ng-container>
+                        <mat-icon>save</mat-icon>
+                        <span>Save Changes</span>
+                      </ng-container>
+                    }
+                  </button>
+
+                  <button 
+                    mat-button 
+                    type="button" 
+                    (click)="onResetForm()"
+                    [disabled]="!hasChanges() || isSaving()">
+                    <mat-icon>refresh</mat-icon>
+                    Reset
+                  </button>
+                </div>
+              </form>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </mat-tab>
+
+      <!-- Security Tab -->
+      <mat-tab label="Security">
+        <div class="tab-content">
+          <mat-card>
+            <mat-card-header>
+              <mat-card-title>Change Password</mat-card-title>
+              <mat-card-subtitle>Keep your account secure with a strong password</mat-card-subtitle>
+            </mat-card-header>
+            
+            <mat-card-content>
+              <form [formGroup]="passwordForm" (ngSubmit)="onChangePassword()">
+                <mat-form-field appearance="outline">
+                  <mat-label>Current Password</mat-label>
+                  <input matInput formControlName="currentPassword" type="password" 
+                         placeholder="Enter your current password">
+                  <mat-icon matSuffix>lock</mat-icon>
+                  @if (passwordForm.get('currentPassword')?.invalid && passwordForm.get('currentPassword')?.touched) {
+                    <mat-error>{{ getErrorMessage(passwordForm, 'currentPassword') }}</mat-error>
+                  }
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>New Password</mat-label>
+                  <input matInput formControlName="newPassword" type="password" 
+                         placeholder="Enter your new password">
+                  <mat-icon matSuffix>lock_outline</mat-icon>
+                  @if (passwordForm.get('newPassword')?.value) {
+                    <mat-hint>
+                      Strength: 
+                      <span [style.color]="getPasswordStrengthIndicator().color">
+                        {{ getPasswordStrengthIndicator().label }}
+                      </span>
+                    </mat-hint>
+                  }
+                  @if (passwordForm.get('newPassword')?.invalid && passwordForm.get('newPassword')?.touched) {
+                    <mat-error>{{ getErrorMessage(passwordForm, 'newPassword') }}</mat-error>
+                  }
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Confirm New Password</mat-label>
+                  <input matInput formControlName="confirmPassword" type="password" 
+                         placeholder="Confirm your new password">
+                  <mat-icon matSuffix>lock_outline</mat-icon>
+                  @if (passwordForm.get('confirmPassword')?.invalid && passwordForm.get('confirmPassword')?.touched) {
+                    <mat-error>{{ getErrorMessage(passwordForm, 'confirmPassword') }}</mat-error>
+                  }
+                </mat-form-field>
+
+                <div class="password-requirements">
+                  <h4>Password Requirements:</h4>
+                  <ul>
+                    <li>At least 8 characters long</li>
+                    <li>Contains uppercase and lowercase letters</li>
+                    <li>Contains at least one number</li>
+                    <li>Contains at least one special character (#?!&#64;$%^&*-)</li>
+                  </ul>
+                </div>
+
+                <div class="form-actions">
+                  <button 
+                    mat-raised-button 
+                    color="primary" 
+                    type="submit"
+                    [disabled]="passwordForm.invalid || isSaving()">
+                    @if (isSaving()) {
+                      <mat-spinner diameter="16"></mat-spinner>
+                      <span>Changing...</span>
+                    } @else {
+                      <ng-container>
+                        <mat-icon>security</mat-icon>
+                        <span>Change Password</span>
+                      </ng-container>
+                    }
+                  </button>
+                </div>
+              </form>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </mat-tab>
+
+      <!-- Preferences Tab -->
+      <mat-tab label="Preferences">
+        <div class="tab-content">
+          <mat-card>
+            <mat-card-header>
+              <mat-card-title>User Preferences</mat-card-title>
+              <mat-card-subtitle>Customize your experience</mat-card-subtitle>
+            </mat-card-header>
+            
+            <mat-card-content>
+              <form [formGroup]="preferencesForm" (ngSubmit)="onUpdatePreferences()">
+                <div class="preferences-section">
+                  <h3>Appearance</h3>
+                  <mat-form-field appearance="outline">
+                    <mat-label>Theme</mat-label>
+                    <mat-select formControlName="theme">
+                      <mat-option value="light">Light</mat-option>
+                      <mat-option value="dark">Dark</mat-option>
+                      <mat-option value="auto">Auto (System)</mat-option>
+                    </mat-select>
+                    <mat-icon matSuffix>palette</mat-icon>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Language</mat-label>
+                    <mat-select formControlName="language">
+                      <mat-option value="en">English</mat-option>
+                      <mat-option value="es">Spanish</mat-option>
+                      <mat-option value="fr">French</mat-option>
+                      <mat-option value="de">German</mat-option>
+                    </mat-select>
+                    <mat-icon matSuffix>language</mat-icon>
+                  </mat-form-field>
+                </div>
+
+                <mat-divider></mat-divider>
+
+                <div class="preferences-section">
+                  <h3>Notifications</h3>
+                  
+                  <div class="preference-item">
+                    <mat-slide-toggle formControlName="emailNotifications">
+                      Email Notifications
+                    </mat-slide-toggle>
+                    <p class="preference-description">
+                      Receive email notifications for important updates and mentions
+                    </p>
+                  </div>
+
+                  <div class="preference-item">
+                    <mat-slide-toggle formControlName="pushNotifications">
+                      Push Notifications
+                    </mat-slide-toggle>
+                    <p class="preference-description">
+                      Receive browser push notifications for real-time updates
+                    </p>
+                  </div>
+
+                  <div class="preference-item">
+                    <mat-slide-toggle formControlName="weeklyDigest">
+                      Weekly Digest
+                    </mat-slide-toggle>
+                    <p class="preference-description">
+                      Receive a weekly summary of platform activity and popular content
+                    </p>
+                  </div>
+                </div>
+
+                <mat-divider></mat-divider>
+
+                <div class="preferences-section">
+                  <h3>Timezone</h3>
+                  <mat-form-field appearance="outline">
+                    <mat-label>Timezone</mat-label>
+                    <mat-select formControlName="timezone">
+                      <mat-option value="UTC">UTC</mat-option>
+                      <mat-option value="EST">Eastern Time</mat-option>
+                      <mat-option value="PST">Pacific Time</mat-option>
+                      <mat-option value="GMT">Greenwich Mean Time</mat-option>
+                    </mat-select>
+                    <mat-icon matSuffix>schedule</mat-icon>
+                  </mat-form-field>
+                </div>
+
+                <div class="form-actions">
+                  <button 
+                    mat-raised-button 
+                    color="primary" 
+                    type="submit"
+                    [disabled]="preferencesForm.invalid || isSaving()">
+                    @if (isSaving()) {
+                      <mat-spinner diameter="16"></mat-spinner>
+                      <span>Saving...</span>
+                    } @else {
+                      <ng-container>
+                        <mat-icon>save</mat-icon>
+                        <span>Save Preferences</span>
+                      </ng-container>
+                    }
+                  </button>
+                </div>
+              </form>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </mat-tab>
+
+      <!-- Account Tab -->
+      <mat-tab label="Account">
+        <div class="tab-content">
+          <mat-card>
+            <mat-card-header>
+              <mat-card-title>Account Management</mat-card-title>
+              <mat-card-subtitle>Manage your account settings and data</mat-card-subtitle>
+            </mat-card-header>
+            
+            <mat-card-content>
+              <div class="account-section">
+                <h3>Account Information</h3>
+                <p>Your account was created on {{ currentUser()?.createdAt | date:'fullDate' }}</p>
+                @if (currentUser()?.lastLoginAt) {
+                  <p>Last login: {{ currentUser()?.lastLoginAt | date:'medium' }}</p>
+                }
+              </div>
+
+              <mat-divider></mat-divider>
+
+              <div class="account-section">
+                <h3>Data Export</h3>
+                <p>Download a copy of your data including articles, comments, and preferences.</p>
+                <button mat-stroked-button color="primary">
+                  <mat-icon>download</mat-icon>
+                  Export My Data
+                </button>
+              </div>
+
+              <mat-divider></mat-divider>
+
+              <div class="account-section danger-zone">
+                <h3>Danger Zone</h3>
+                <p>Once you delete your account, there is no going back. Please be certain.</p>
+                <button 
+                  mat-raised-button 
+                  color="warn" 
+                  (click)="onDeleteAccount()"
+                  [disabled]="isLoading()">
+                  <mat-icon>delete_forever</mat-icon>
+                  Delete Account
+                </button>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </mat-tab>
+
+    </mat-tab-group>
+  }
+</div>

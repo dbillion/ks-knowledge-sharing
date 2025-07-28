@@ -1,1 +1,256 @@
-<p>sidebar works!</p>
+<nav class="sidebar" [class.collapsed]="isCollapsed()">
+  
+  <!-- Sidebar Header -->
+  <div class="sidebar-header">
+    <div class="brand" [class.collapsed]="isCollapsed()">
+      <mat-icon class="brand-icon">school</mat-icon>
+      @if (!isCollapsed()) {
+        <span class="brand-text">Knowledge Share</span>
+      }
+    </div>
+    
+    <button 
+      mat-icon-button 
+      class="collapse-toggle"
+      (click)="toggleSidebar()"
+      [matTooltip]="isCollapsed() ? 'Expand sidebar' : 'Collapse sidebar'"
+      matTooltipPosition="right">
+      <mat-icon>{{ isCollapsed() ? 'menu_open' : 'menu' }}</mat-icon>
+    </button>
+  </div>
+
+  <!-- User Profile Section -->
+  @if (currentUser()) {
+    <div class="user-section" [class.collapsed]="isCollapsed()">
+      <div class="user-avatar">
+        <div class="avatar-circle">
+          {{ getUserInitials() }}
+        </div>
+      </div>
+      
+      @if (!isCollapsed()) {
+        <div class="user-info">
+          <div class="user-name">
+            {{ currentUser()?.firstName }} {{ currentUser()?.lastName }}
+          </div>
+          <div class="user-role">
+            {{ userRole() | titlecase }}
+          </div>
+        </div>
+      }
+
+      <button 
+        mat-icon-button 
+        class="user-menu"
+        [matTooltip]="isCollapsed() ? 'User menu' : ''"
+        matTooltipPosition="right">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+    </div>
+  }
+
+  <mat-divider></mat-divider>
+
+  <!-- Quick Actions -->
+  @if (canCreateContent()) {
+    <div class="quick-actions" [class.collapsed]="isCollapsed()">
+      @if (!isCollapsed()) {
+        <h3 class="section-title">Quick Actions</h3>
+      }
+      
+      @for (action of quickActions; track action.label) {
+        @if (hasAccess(action)) {
+          <button 
+            mat-button 
+            class="quick-action-btn"
+            [class.icon-only]="isCollapsed()"
+            [matTooltip]="isCollapsed() ? action.label : ''"
+            matTooltipPosition="right"
+            (click)="action.route ? navigateTo(action.route) : executeAction(action.action!)">
+            <mat-icon>{{ action.icon }}</mat-icon>
+            @if (!isCollapsed()) {
+              <span>{{ action.label }}</span>
+            }
+          </button>
+        }
+      }
+    </div>
+
+    <mat-divider></mat-divider>
+  }
+
+  <!-- Main Navigation -->
+  <div class="navigation-section">
+    <mat-nav-list class="nav-list">
+      
+      @for (item of navigationItems; track item.label) {
+        @if (hasAccess(item)) {
+          
+          <!-- Single Item -->
+          @if (!item.children) {
+            <mat-list-item 
+              class="nav-item"
+              [class.active]="isActiveRoute(item.route!)"
+              [class.collapsed]="isCollapsed()"
+              (click)="navigateTo(item.route!)"
+              [matTooltip]="isCollapsed() ? item.label : ''"
+              matTooltipPosition="right">
+              
+              <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+              
+              @if (!isCollapsed()) {
+                <ng-container>
+                  <span matListItemTitle>{{ item.label }}</span>
+                  @if (item.badge) {
+                    <span matListItemMeta>
+                      <span class="nav-badge" [matBadge]="item.badge" matBadgeColor="accent"></span>
+                    </span>
+                  }
+                </ng-container>
+              } @else if (item.badge) {
+                <span class="collapsed-badge">{{ item.badge }}</span>
+              }
+            </mat-list-item>
+          } 
+          
+          <!-- Expandable Item -->
+          @else {
+            <mat-expansion-panel 
+              class="nav-expansion"
+              [class.collapsed]="isCollapsed()"
+              [disabled]="isCollapsed()">
+              
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  <mat-icon class="expansion-icon">{{ item.icon }}</mat-icon>
+                  @if (!isCollapsed()) {
+                    <span class="expansion-title">{{ item.label }}</span>
+                  }
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+
+              <mat-nav-list class="sub-nav-list">
+                @for (child of item.children; track child.label) {
+                  @if (hasAccess(child)) {
+                    <mat-list-item 
+                      class="sub-nav-item"
+                      [class.active]="isActiveRoute(child.route!)"
+                      (click)="navigateTo(child.route!)">
+                      
+                      <mat-icon matListItemIcon>{{ child.icon }}</mat-icon>
+                      <span matListItemTitle>{{ child.label }}</span>
+                      
+                      @if (child.badge) {
+                        <span matListItemMeta>
+                          <span class="nav-badge" [matBadge]="child.badge" matBadgeColor="accent"></span>
+                        </span>
+                      }
+                    </mat-list-item>
+                  }
+                }
+              </mat-nav-list>
+            </mat-expansion-panel>
+
+            <!-- Collapsed view for expandable items -->
+            @if (isCollapsed()) {
+              <mat-list-item 
+                class="nav-item collapsed-expandable"
+                [matTooltip]="item.label"
+                matTooltipPosition="right">
+                <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+              </mat-list-item>
+            }
+          }
+          
+        }
+      }
+      
+    </mat-nav-list>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <!-- Categories Section -->
+  @if (categories().length > 0 && !isCollapsed()) {
+    <div class="categories-section">
+      <h3 class="section-title">Categories</h3>
+      
+      <mat-nav-list class="categories-list">
+        @for (category of categories(); track category.id) {
+          <mat-list-item 
+            class="category-item"
+            (click)="onCategoryClick(category.id)">
+            <mat-icon matListItemIcon>folder</mat-icon>
+            <span matListItemTitle>{{ category.name }}</span>
+          </mat-list-item>
+        }
+      </mat-nav-list>
+    </div>
+
+    <mat-divider></mat-divider>
+  }
+
+  <!-- Admin Section -->
+  @if (canManageUsers() && adminItems.length > 0) {
+    <div class="admin-section" [class.collapsed]="isCollapsed()">
+      @if (!isCollapsed()) {
+        <h3 class="section-title admin-title">
+          <mat-icon>admin_panel_settings</mat-icon>
+          Administration
+        </h3>
+      }
+      
+      <mat-nav-list class="admin-nav-list">
+        @for (item of adminItems; track item.label) {
+          @if (hasAccess(item)) {
+            <mat-list-item 
+              class="admin-nav-item"
+              [class.active]="isActiveRoute(item.route!)"
+              [class.collapsed]="isCollapsed()"
+              (click)="navigateTo(item.route!)"
+              [matTooltip]="isCollapsed() ? item.label : ''"
+              matTooltipPosition="right">
+              
+              <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+              @if (!isCollapsed()) {
+                <span matListItemTitle>{{ item.label }}</span>
+              }
+            </mat-list-item>
+          }
+        }
+      </mat-nav-list>
+    </div>
+
+    <mat-divider></mat-divider>
+  }
+
+  <!-- Footer Actions -->
+  <div class="sidebar-footer" [class.collapsed]="isCollapsed()">
+    <button 
+      mat-button 
+      class="footer-action"
+      [class.icon-only]="isCollapsed()"
+      routerLink="/profile"
+      [matTooltip]="isCollapsed() ? 'Profile Settings' : ''"
+      matTooltipPosition="right">
+      <mat-icon>settings</mat-icon>
+      @if (!isCollapsed()) {
+        <span>Settings</span>
+      }
+    </button>
+
+    <button 
+      mat-button 
+      class="footer-action logout-btn"
+      [class.icon-only]="isCollapsed()"
+      (click)="onLogout()"
+      [matTooltip]="isCollapsed() ? 'Logout' : ''"
+      matTooltipPosition="right">
+      <mat-icon>logout</mat-icon>
+      @if (!isCollapsed()) {
+        <span>Logout</span>
+      }
+    </button>
+  </div>
+
+</nav>

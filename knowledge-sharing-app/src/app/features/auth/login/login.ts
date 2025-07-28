@@ -1,11 +1,142 @@
-import { Component } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Router, RouterModule } from '@angular/router';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDividerModule } from '@angular/material/divider';
+import { AuthService } from '../../../core/services/auth';
+import { LoginCredentials } from '../../../core/models';
 
 @Component({
   selector: 'app-login',
-  imports: [],
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterModule,
+    ReactiveFormsModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    MatSnackBarModule,
+    MatDividerModule
+  ],
   templateUrl: './login.html',
   styleUrl: './login.scss'
 })
-export class Login {
+export class LoginComponent {
+  private fb = inject(FormBuilder);
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private snackBar = inject(MatSnackBar);
 
+  loginForm: FormGroup;
+  hidePassword = signal(true);
+  isLoading = this.authService.loading;
+
+  // Mock credentials for easy testing
+  mockCredentials = this.authService.getMockCredentials();
+
+  constructor() {
+    this.loginForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]]
+    });
+  }
+
+  onSubmit(): void {
+    if (this.loginForm.valid) {
+      const credentials: LoginCredentials = this.loginForm.value;
+      
+      // Mock login implementation (replace with actual API call)
+      this.mockLogin(credentials);
+    } else {
+      this.markFormGroupTouched();
+    }
+  }
+
+  private mockLogin(credentials: LoginCredentials): void {
+    // Simulate API call delay
+    setTimeout(() => {
+      const users = [
+        { email: 'admin@knowledge.com', password: 'password123', role: 'admin' },
+        { email: 'editor@knowledge.com', password: 'password123', role: 'editor' },
+        { email: 'viewer@knowledge.com', password: 'password123', role: 'viewer' }
+      ];
+
+      const user = users.find(u => 
+        u.email === credentials.email && 
+        u.password === credentials.password
+      );
+
+      if (user) {
+        this.snackBar.open('Login successful!', 'Close', { duration: 3000 });
+        this.router.navigate(['/']);
+      } else {
+        this.snackBar.open('Invalid email or password', 'Close', { duration: 5000 });
+      }
+    }, 1000);
+  }
+
+  onGuestLogin(): void {
+    this.loginForm.patchValue({
+      email: 'viewer@knowledge.com',
+      password: 'password123'
+    });
+  }
+
+  onAdminLogin(): void {
+    this.loginForm.patchValue({
+      email: 'admin@knowledge.com',
+      password: 'password123'
+    });
+  }
+
+  onEditorLogin(): void {
+    this.loginForm.patchValue({
+      email: 'editor@knowledge.com',
+      password: 'password123'
+    });
+  }
+
+  togglePasswordVisibility(): void {
+    this.hidePassword.set(!this.hidePassword());
+  }
+
+  private markFormGroupTouched(): void {
+    Object.keys(this.loginForm.controls).forEach(key => {
+      const control = this.loginForm.get(key);
+      control?.markAsTouched();
+    });
+  }
+
+  getEmailErrorMessage(): string {
+    const emailControl = this.loginForm.get('email');
+    if (emailControl?.hasError('required')) {
+      return 'Email is required';
+    }
+    if (emailControl?.hasError('email')) {
+      return 'Please enter a valid email';
+    }
+    return '';
+  }
+
+  getPasswordErrorMessage(): string {
+    const passwordControl = this.loginForm.get('password');
+    if (passwordControl?.hasError('required')) {
+      return 'Password is required';
+    }
+    if (passwordControl?.hasError('minlength')) {
+      return 'Password must be at least 6 characters';
+    }
+    return '';
+  }
 }

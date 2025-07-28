@@ -1,0 +1,283 @@
+.home-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.hero-section {
+  text-align: center;
+  margin-bottom: 60px;
+  padding: 60px 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 12px;
+
+  h1 {
+    font-size: 3rem;
+    margin-bottom: 16px;
+    font-weight: 300;
+  }
+
+  p {
+    font-size: 1.2rem;
+    margin-bottom: 32px;
+    opacity: 0.9;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+
+    button {
+      padding: 12px 24px;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+  }
+}
+
+.features-section {
+  margin-bottom: 60px;
+
+  h2 {
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 2.5rem;
+    color: #333;
+  }
+
+  .features-grid {
+    // Responsive grid behavior
+    @media (max-width: 1024px) {
+      ::ng-deep mat-grid-list {
+        columns: 2;
+      }
+    }
+
+    @media (max-width: 768px) {
+      ::ng-deep mat-grid-list {
+        columns: 1;
+      }
+    }
+  }
+
+  .feature-card {
+    height: 100%;
+    text-align: center;
+    padding: 20px;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .feature-icon {
+      font-size: 48px;
+      width: 48px;
+      height: 48px;
+      color: #667eea;
+      margin-bottom: 16px;
+    }
+
+    h3 {
+      margin-bottom: 12px;
+      color: #333;
+      font-weight: 500;
+    }
+
+    p {
+      color: #666;
+      line-height: 1.5;
+    }
+  }
+}
+
+.user-section {
+  margin-bottom: 60px;
+
+  .user-card {
+    text-align: center;
+    padding: 32px;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+
+    h2 {
+      margin-bottom: 12px;
+      color: #333;
+    }
+
+    p {
+      margin-bottom: 24px;
+      color: #666;
+
+      .user-role {
+        font-weight: 500;
+        color: #667eea;
+        background: rgba(102, 126, 234, 0.1);
+        padding: 4px 8px;
+        border-radius: 4px;
+      }
+    }
+
+    .quick-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+
+      button {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+    }
+  }
+}
+
+.stats-section {
+  .stats-card {
+    text-align: center;
+    padding: 40px;
+
+    h2 {
+      margin-bottom: 32px;
+      color: #333;
+      font-weight: 500;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 32px;
+
+      .stat-item {
+        .stat-number {
+          display: block;
+          font-size: 3rem;
+          font-weight: bold;
+          color: #667eea;
+          margin-bottom: 8px;
+        }
+
+        .stat-label {
+          font-size: 1.1rem;
+          color: #666;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          font-weight: 500;
+        }
+      }
+    }
+  }
+}
+
+// Responsive design following Angular Material breakpoints
+@media (max-width: 768px) {
+  .home-container {
+    padding: 20px 16px;
+  }
+
+  .hero-section {
+    padding: 40px 20px;
+    margin-bottom: 40px;
+
+    h1 {
+      font-size: 2rem;
+    }
+
+    p {
+      font-size: 1rem;
+    }
+
+    .hero-actions {
+      flex-direction: column;
+      align-items: center;
+
+      button {
+        width: 100%;
+        max-width: 280px;
+      }
+    }
+  }
+
+  .features-section {
+    margin-bottom: 40px;
+
+    h2 {
+      font-size: 2rem;
+    }
+  }
+
+  .user-section {
+    margin-bottom: 40px;
+
+    .user-card {
+      padding: 24px;
+
+      .quick-actions {
+        flex-direction: column;
+        align-items: center;
+
+        button {
+          width: 100%;
+          max-width: 200px;
+        }
+      }
+    }
+  }
+
+  .stats-section .stats-card {
+    padding: 24px;
+
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+
+      .stat-item .stat-number {
+        font-size: 2.5rem;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-section .stats-card .stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Animation for better UX
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.home-container > * {
+  animation: fadeIn 0.6s ease-out;
+}
+
+.hero-section {
+  animation-delay: 0.1s;
+}
+
+.features-section {
+  animation-delay: 0.2s;
+}
+
+.user-section {
+  animation-delay: 0.3s;
+}
+
+.stats-section {
+  animation-delay: 0.4s;
+}

@@ -1,0 +1,54 @@
+.article-create-card {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+.article-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.content-field {
+  textarea {
+    min-height: 300px;
+    resize: vertical;
+  }
+}
+
+.tags-section {
+  .tags-input {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+
+  .tags-display {
+    margin-top: 0.5rem;
+    
+    mat-chip-listbox {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+  }
+}
+
+.publish-section {
+  margin: 1rem 0;
+  
+  mat-checkbox {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .article-create-card {
+    margin: 1rem;
+    padding: 0.5rem;
+  }
+}

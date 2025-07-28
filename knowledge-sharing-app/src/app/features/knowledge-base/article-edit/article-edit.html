@@ -1,0 +1,298 @@
+<div class="article-edit-container">
+  <!-- Loading State -->
+  @if (isLoading()) {
+    <app-loading-spinner 
+      message="Loading article..."
+      [diameter]="40">
+    </app-loading-spinner>
+  } @else {
+    
+    <!-- Editor Header -->
+    <div class="editor-header">
+      <mat-toolbar class="editor-toolbar">
+        <div class="toolbar-content">
+          <div class="breadcrumb">
+            <button mat-icon-button routerLink="/articles" matTooltip="Back to Articles">
+              <mat-icon>arrow_back</mat-icon>
+            </button>
+            <span class="breadcrumb-text">
+              {{ isNewArticle() ? 'Create New Article' : 'Edit Article' }}
+            </span>
+          </div>
+
+          <div class="editor-actions">
+            <div class="auto-save-indicator" *ngIf="hasUnsavedChanges()">
+              <mat-icon>edit</mat-icon>
+              <span>Unsaved changes</span>
+            </div>
+
+            <button 
+              mat-button 
+              (click)="onSaveAsDraft()"
+              [disabled]="!articleForm.valid || isSaving() || !canEdit()">
+              <mat-icon>save</mat-icon>
+              Save Draft
+            </button>
+
+            <button 
+              mat-raised-button 
+              color="primary"
+              (click)="onPublish()"
+              [disabled]="!articleForm.valid || isSaving() || !canEdit()">
+              @if (isSaving()) {
+                <mat-spinner diameter="16"></mat-spinner>
+                <span>Publishing...</span>
+              } @else {
+                <ng-container>
+                  <mat-icon>publish</mat-icon>
+                  <span>Publish</span>
+                </ng-container>
+              }
+            </button>
+
+            <button mat-icon-button [matMenuTriggerFor]="moreMenu" matTooltip="More options">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            
+            <mat-menu #moreMenu="matMenu">
+              <button mat-menu-item (click)="onPreview()" [disabled]="!article()">
+                <mat-icon>visibility</mat-icon>
+                <span>Preview</span>
+              </button>
+              <button mat-menu-item (click)="autoSave()" [disabled]="!hasUnsavedChanges()">
+                <mat-icon>cloud_upload</mat-icon>
+                <span>Auto Save</span>
+              </button>
+              <mat-divider></mat-divider>
+              <button mat-menu-item (click)="onDelete()" 
+                      [disabled]="isNewArticle() || !canEdit()"
+                      class="delete-action">
+                <mat-icon>delete</mat-icon>
+                <span>Delete Article</span>
+              </button>
+            </mat-menu>
+          </div>
+        </div>
+      </mat-toolbar>
+    </div>
+
+    <!-- Main Editor Content -->
+    <div class="editor-content">
+      <form [formGroup]="articleForm" class="article-form">
+        
+        <!-- Article Header -->
+        <mat-card class="article-header-card">
+          <mat-card-content>
+            <!-- Title -->
+            <mat-form-field appearance="outline" class="title-field">
+              <mat-label>Article Title</mat-label>
+              <input 
+                matInput 
+                formControlName="title" 
+                placeholder="Enter a compelling title for your article"
+                (input)="onTitleChange()">
+              <mat-icon matSuffix>title</mat-icon>
+              @if (articleForm.get('title')?.invalid && articleForm.get('title')?.touched) {
+                <mat-error>{{ getErrorMessage('title') }}</mat-error>
+              }
+            </mat-form-field>
+
+            <!-- Metadata Row -->
+            <div class="metadata-row">
+              <!-- Category Selection -->
+              <mat-form-field appearance="outline">
+                <mat-label>Category</mat-label>
+                <mat-select formControlName="categoryId">
+                  @for (category of categories(); track category.id) {
+                    <mat-option [value]="category.id">
+                      {{ category.name }}
+                    </mat-option>
+                  }
+                </mat-select>
+                <mat-icon matSuffix>category</mat-icon>
+                @if (articleForm.get('categoryId')?.invalid && articleForm.get('categoryId')?.touched) {
+                  <mat-error>{{ getErrorMessage('categoryId') }}</mat-error>
+                }
+              </mat-form-field>
+
+              <!-- Publication Status -->
+              <div class="publication-toggle">
+                <mat-slide-toggle formControlName="isPublished">
+                  {{ articleForm.get('isPublished')?.value ? 'Published' : 'Draft' }}
+                </mat-slide-toggle>
+              </div>
+            </div>
+
+            <!-- Tags Section -->
+            <div class="tags-section">
+              <h3>Tags</h3>
+              <div class="tags-input-container">
+                <mat-form-field appearance="outline" class="tag-input">
+                  <mat-label>Add tags</mat-label>
+                  <input 
+                    matInput 
+                    #tagInput
+                    [matAutocomplete]="tagAutocomplete"
+                    (keyup.enter)="onAddTag(tagInput.value); tagInput.value = ''"
+                    placeholder="Type and press Enter to add tags">
+                  <mat-icon matSuffix>local_offer</mat-icon>
+                </mat-form-field>
+                
+                <mat-autocomplete #tagAutocomplete="matAutocomplete">
+                  @for (tag of availableTags(); track tag) {
+                    <mat-option 
+                      [value]="tag"
+                      (onSelectionChange)="onAddTag(tag); tagInput.value = ''">
+                      {{ tag }}
+                    </mat-option>
+                  }
+                </mat-autocomplete>
+              </div>
+
+              <!-- Selected Tags Display -->
+              @if (selectedTags().length > 0) {
+                <div class="selected-tags">
+                  <mat-chip-set>
+                    @for (tag of selectedTags(); track tag) {
+                      <mat-chip (removed)="onRemoveTag(tag)">
+                        {{ tag }}
+                        <mat-icon matChipRemove>cancel</mat-icon>
+                      </mat-chip>
+                    }
+                  </mat-chip-set>
+                </div>
+              }
+            </div>
+
+            <!-- Excerpt -->
+            <mat-form-field appearance="outline" class="excerpt-field">
+              <mat-label>Article Excerpt</mat-label>
+              <textarea 
+                matInput 
+                formControlName="excerpt" 
+                rows="3"
+                placeholder="Brief description of the article (optional - will be auto-generated if empty)">
+              </textarea>
+              <mat-icon matSuffix>description</mat-icon>
+              <mat-hint>{{ articleForm.get('excerpt')?.value?.length || 0 }}/300 characters</mat-hint>
+            </mat-form-field>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Content Editor -->
+        <mat-card class="content-editor-card">
+          <mat-card-header>
+            <mat-card-title>Content</mat-card-title>
+            <mat-card-subtitle>
+              Word count: {{ getWordCount() }} | Estimated reading time: {{ getReadingTime() }} min
+            </mat-card-subtitle>
+          </mat-card-header>
+          
+          <mat-card-content>
+            <div class="editor-container">
+              <quill-editor
+                formControlName="content"
+                [modules]="quillConfig"
+                (onContentChanged)="onContentChange()"
+                placeholder="Start writing your article...">
+              </quill-editor>
+              
+              @if (articleForm.get('content')?.invalid && articleForm.get('content')?.touched) {
+                <div class="content-error">
+                  <mat-icon>error</mat-icon>
+                  <span>{{ getErrorMessage('content') }}</span>
+                </div>
+              }
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Article Preview -->
+        @if (articleForm.get('content')?.value) {
+          <mat-card class="preview-card">
+            <mat-card-header>
+              <mat-card-title>Preview</mat-card-title>
+              <mat-card-subtitle>How your article will appear to readers</mat-card-subtitle>
+            </mat-card-header>
+            
+            <mat-card-content>
+              <div class="preview-content">
+                <h1 class="preview-title">{{ articleForm.get('title')?.value || 'Untitled Article' }}</h1>
+                
+                <div class="preview-meta">
+                  <span class="preview-category">
+                    {{ getCategoryName(articleForm.get('categoryId')?.value) }}
+                  </span>
+                  <span class="preview-status" 
+                        [class.published]="articleForm.get('isPublished')?.value"
+                        [class.draft]="!articleForm.get('isPublished')?.value">
+                    {{ articleForm.get('isPublished')?.value ? 'Published' : 'Draft' }}
+                  </span>
+                </div>
+
+                @if (selectedTags().length > 0) {
+                  <div class="preview-tags">
+                    @for (tag of selectedTags(); track tag) {
+                      <span class="preview-tag">{{ tag }}</span>
+                    }
+                  </div>
+                }
+
+                @if (articleForm.get('excerpt')?.value) {
+                  <p class="preview-excerpt">{{ articleForm.get('excerpt')?.value }}</p>
+                }
+
+                <div class="preview-content-body" 
+                     [innerHTML]="articleForm.get('content')?.value">
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        }
+
+      </form>
+    </div>
+
+    <!-- Bottom Actions -->
+    <div class="bottom-actions">
+      <mat-card>
+        <mat-card-content>
+          <div class="action-buttons">
+            <button mat-button (click)="onCancel()">
+              <mat-icon>cancel</mat-icon>
+              Cancel
+            </button>
+
+            <div class="primary-actions">
+              <button 
+                mat-button 
+                color="primary"
+                (click)="onSaveAsDraft()"
+                [disabled]="!articleForm.valid || isSaving() || !canEdit()">
+                <mat-icon>save</mat-icon>
+                Save as Draft
+              </button>
+
+              <button 
+                mat-raised-button 
+                color="primary"
+                (click)="onPublish()"
+                [disabled]="!articleForm.valid || isSaving() || !canEdit()">
+                @if (isSaving()) {
+                  <mat-spinner diameter="16"></mat-spinner>
+                  <span>Publishing...</span>
+                } @else {
+                  <ng-container>
+                    <mat-icon>publish</mat-icon>
+                    <span>Publish Article</span>
+                  </ng-container>
+                }
+              </button>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+  }
+</div>

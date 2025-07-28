@@ -1,1 +1,183 @@
-<p>footer works!</p>
+<footer class="app-footer">
+  
+  <!-- Main Footer Content -->
+  <div class="footer-content">
+    <div class="footer-sections">
+      
+      <!-- Company Brand Section -->
+      <div class="footer-section brand-section">
+        <div class="brand">
+          <mat-icon class="brand-icon">school</mat-icon>
+          <h3>Knowledge Share</h3>
+        </div>
+        <p class="brand-description">
+          Empowering teams with seamless knowledge sharing and collaboration. 
+          Create, discover, and collaborate on knowledge that matters.
+        </p>
+        
+        <!-- Social Links -->
+        <div class="social-links">
+          @for (social of socialLinks; track social.name) {
+            <button 
+              mat-icon-button 
+              class="social-link"
+              (click)="openExternalLink(social.url)"
+              [matTooltip]="social.ariaLabel"
+              [attr.aria-label]="social.ariaLabel">
+              <mat-icon [svgIcon]="social.icon">{{ social.icon }}</mat-icon>
+            </button>
+          }
+        </div>
+      </div>
+
+      <!-- Product Links -->
+      <div class="footer-section">
+        <h4>Product</h4>
+        <ul class="footer-links">
+          @for (link of footerLinks.product; track link.label) {
+            <li>
+              <a 
+                [routerLink]="link.route" 
+                class="footer-link"
+                [attr.aria-label]="'Navigate to ' + link.label">
+                {{ link.label }}
+              </a>
+            </li>
+          }
+        </ul>
+      </div>
+
+      <!-- Company Links -->
+      <div class="footer-section">
+        <h4>Company</h4>
+        <ul class="footer-links">
+          @for (link of footerLinks.company; track link.label) {
+            <li>
+              <a 
+                [routerLink]="link.route" 
+                class="footer-link"
+                [attr.aria-label]="'Navigate to ' + link.label">
+                {{ link.label }}
+              </a>
+            </li>
+          }
+        </ul>
+      </div>
+
+      <!-- Support Links -->
+      <div class="footer-section">
+        <h4>Support</h4>
+        <ul class="footer-links">
+          @for (link of footerLinks.support; track link.label) {
+            <li>
+              <a 
+                [routerLink]="link.route" 
+                class="footer-link"
+                [attr.aria-label]="'Navigate to ' + link.label">
+                {{ link.label }}
+              </a>
+            </li>
+          }
+        </ul>
+      </div>
+
+      <!-- Legal Links -->
+      <div class="footer-section">
+        <h4>Legal</h4>
+        <ul class="footer-links">
+          @for (link of footerLinks.legal; track link.label) {
+            <li>
+              <a 
+                [routerLink]="link.route" 
+                class="footer-link"
+                [attr.aria-label]="'Navigate to ' + link.label">
+                {{ link.label }}
+              </a>
+            </li>
+          }
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <!-- Footer Bottom -->
+  <div class="footer-bottom">
+    <div class="footer-bottom-content">
+      
+      <!-- Copyright -->
+      <div class="copyright">
+        <span>© {{ currentYear() }} Knowledge Share. All rights reserved.</span>
+      </div>
+
+      <!-- Version and Update Info -->
+      <div class="version-info">
+        <span class="version">v{{ getCurrentVersion() }}</span>
+        <span class="separator">•</span>
+        <span class="last-updated">Updated {{ getLastUpdated() }}</span>
+      </div>
+
+      <!-- Scroll to Top -->
+      <button 
+        mat-icon-button 
+        class="scroll-to-top"
+        (click)="scrollToTop()"
+        matTooltip="Scroll to top"
+        aria-label="Scroll to top of page">
+        <mat-icon>keyboard_arrow_up</mat-icon>
+      </button>
+
+    </div>
+  </div>
+
+  <!-- Quick Access Bar (for authenticated users) -->
+  @if (isAuthenticated()) {
+    <div class="quick-access-bar">
+      <div class="quick-access-content">
+        
+        <div class="quick-links">
+          <a routerLink="/articles/new" class="quick-link" matTooltip="Create new article">
+            <mat-icon>add</mat-icon>
+            <span>New Article</span>
+          </a>
+          
+          <a routerLink="/search" class="quick-link" matTooltip="Search knowledge base">
+            <mat-icon>search</mat-icon>
+            <span>Search</span>
+          </a>
+          
+          <a routerLink="/articles/drafts" class="quick-link" matTooltip="View drafts">
+            <mat-icon>drafts</mat-icon>
+            <span>Drafts</span>
+          </a>
+          
+          <a routerLink="/profile" class="quick-link" matTooltip="Profile settings">
+            <mat-icon>person</mat-icon>
+            <span>Profile</span>
+          </a>
+        </div>
+
+        <div class="quick-stats">
+          <span class="stat-item">
+            <mat-icon>article</mat-icon>
+            <span>1,234 Articles</span>
+          </span>
+          
+          <span class="stat-item">
+            <mat-icon>people</mat-icon>
+            <span>567 Users</span>
+          </span>
+          
+          <span class="stat-item">
+            <mat-icon>visibility</mat-icon>
+            <span>89K Views</span>
+          </span>
+        </div>
+
+      </div>
+    </div>
+  }
+
+</footer>
