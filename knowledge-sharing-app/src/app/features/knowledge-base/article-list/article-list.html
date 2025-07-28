@@ -32,14 +32,12 @@
     <div class="articles-grid">
       @for (article of paginatedArticles(); track article.id) {
         <mat-card class="article-card">
-          @if (getImageUrl(article)) {
-            <div class="article-image">
-              <img [src]="getImageUrl(article)" 
-                   [alt]="article.title"
-                   (error)="onImageError($event)"
-                   loading="lazy">
-            </div>
-          }
+          <div class="article-image">
+            <img [src]="getImageUrl(article) || getPlaceholderImage(article.categoryId)" 
+                 [alt]="article.title"
+                 (error)="onImageError($event)"
+                 loading="lazy">
+          </div>
           
           <mat-card-header>
             <mat-card-title>{{ article.title }}</mat-card-title>

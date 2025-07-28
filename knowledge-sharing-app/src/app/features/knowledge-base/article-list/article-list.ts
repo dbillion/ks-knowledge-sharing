@@ -124,6 +124,18 @@ export class ArticleListComponent {
     return null;
   }
 
+  getPlaceholderImage(categoryId: string): string {
+    // Return different placeholder images based on category
+    const placeholders = {
+      'cat1': 'https://via.placeholder.com/300x200/4CAF50/white?text=Angular',
+      'cat2': 'https://via.placeholder.com/300x200/2196F3/white?text=TypeScript',
+      'cat3': 'https://via.placeholder.com/300x200/FF9800/white?text=UI/UX',
+      'default': 'https://via.placeholder.com/300x200/9E9E9E/white?text=Article'
+    };
+    
+    return placeholders[categoryId as keyof typeof placeholders] || placeholders.default;
+  }
+
   formatDate(date: Date): string {
     return new Date(date).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -135,7 +147,15 @@ export class ArticleListComponent {
   onImageError(event: Event): void {
     const imgElement = event.target as HTMLImageElement;
     if (imgElement) {
-      imgElement.style.display = 'none';
+      // Get the article from the context if available, or use a generic placeholder
+      const fallbackSrc = 'https://via.placeholder.com/300x200/E0E0E0/757575?text=No+Image';
+      
+      // Prevent infinite error loop
+      if (imgElement.src !== fallbackSrc) {
+        imgElement.src = fallbackSrc;
+      } else {
+        imgElement.style.display = 'none';
+      }
     }
   }
 }
