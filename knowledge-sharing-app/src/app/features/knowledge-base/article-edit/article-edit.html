@@ -12,7 +12,7 @@
       <mat-toolbar class="editor-toolbar">
         <div class="toolbar-content">
           <div class="breadcrumb">
-            <button mat-icon-button routerLink="/articles" matTooltip="Back to Articles">
+            <button mat-icon-button routerLink="/knowledge" matTooltip="Back to Articles">
               <mat-icon>arrow_back</mat-icon>
             </button>
             <span class="breadcrumb-text">
@@ -60,7 +60,7 @@
                 <span>Preview</span>
               </button>
               <button mat-menu-item (click)="autoSave()" [disabled]="!hasUnsavedChanges()">
-                <mat-icon>cloud_upload</mat-icon>
+                <mat-icon>save</mat-icon>
                 <span>Auto Save</span>
               </button>
               <mat-divider></mat-divider>
@@ -91,7 +91,7 @@
                 formControlName="title" 
                 placeholder="Enter a compelling title for your article"
                 (input)="onTitleChange()">
-              <mat-icon matSuffix>title</mat-icon>
+              <mat-icon matSuffix>text_fields</mat-icon>
               @if (articleForm.get('title')?.invalid && articleForm.get('title')?.touched) {
                 <mat-error>{{ getErrorMessage('title') }}</mat-error>
               }
@@ -109,7 +109,7 @@
                     </mat-option>
                   }
                 </mat-select>
-                <mat-icon matSuffix>category</mat-icon>
+                <mat-icon matSuffix>folder</mat-icon>
                 @if (articleForm.get('categoryId')?.invalid && articleForm.get('categoryId')?.touched) {
                   <mat-error>{{ getErrorMessage('categoryId') }}</mat-error>
                 }
@@ -135,7 +135,7 @@
                     [matAutocomplete]="tagAutocomplete"
                     (keyup.enter)="onAddTag(tagInput.value); tagInput.value = ''"
                     placeholder="Type and press Enter to add tags">
-                  <mat-icon matSuffix>local_offer</mat-icon>
+                  <mat-icon matSuffix>label</mat-icon>
                 </mat-form-field>
                 
                 <mat-autocomplete #tagAutocomplete="matAutocomplete">
@@ -173,7 +173,7 @@
                 rows="3"
                 placeholder="Brief description of the article (optional - will be auto-generated if empty)">
               </textarea>
-              <mat-icon matSuffix>description</mat-icon>
+              <mat-icon matSuffix>notes</mat-icon>
               <mat-hint>{{ articleForm.get('excerpt')?.value?.length || 0 }}/300 characters</mat-hint>
             </mat-form-field>
           </mat-card-content>
