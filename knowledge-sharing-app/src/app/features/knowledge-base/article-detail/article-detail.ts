@@ -126,7 +126,7 @@ export class ArticleDetailComponent implements OnInit {
   onEdit(): void {
     const article = this.article();
     if (article) {
-      this.router.navigate(['/knowledge', article.id, 'edit']);
+      this.router.navigate(['/knowledge/edit', article.id]);
     }
   }
 

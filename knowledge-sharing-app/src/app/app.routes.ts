@@ -66,6 +66,12 @@ export const routes: Routes = [
         loadComponent: () => import('./features/knowledge-base/article-create/article-create').then(m => m.ArticleCreateComponent)
       },
       {
+        path: 'edit/:id',
+        canActivate: [roleGuard],
+        data: { roles: ['admin', 'editor'] },
+        loadComponent: () => import('./features/knowledge-base/article-edit/article-edit').then(m => m.ArticleEditComponent)
+      },
+      {
         path: ':id',
         loadComponent: () => import('./features/knowledge-base/article-detail/article-detail').then(m => m.ArticleDetailComponent)
       }

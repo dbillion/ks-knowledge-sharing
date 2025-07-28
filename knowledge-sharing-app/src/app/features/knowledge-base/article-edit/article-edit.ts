@@ -122,12 +122,14 @@ export class ArticleEditComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    console.log('ArticleEditComponent initialized'); // Debug log
     this.loadInitialData();
     this.setupFormChangeDetection();
     
     // Get article ID from route
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe(params => {
       const id = params['id'];
+      console.log('Route params:', params, 'Article ID:', id); // Debug log
       this.articleId.set(id);
       if (id) {
         this.loadArticle(id);
@@ -187,13 +189,14 @@ export class ArticleEditComponent implements OnInit, OnDestroy {
           this.populateForm(article);
         } else {
           this.snackBar.open('Article not found', 'Close', { duration: 3000 });
-          this.router.navigate(['/articles']);
+          this.router.navigate(['/knowledge']);
         }
         this.isLoading.set(false);
       },
       error: (error: any) => {
         console.error('Error loading article:', error);
         this.snackBar.open('Error loading article', 'Close', { duration: 3000 });
+        this.router.navigate(['/knowledge']);
         this.isLoading.set(false);
       }
     });

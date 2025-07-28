@@ -65,7 +65,7 @@
             @if (canCreateArticles()) {
               <button mat-button 
                       color="accent"
-                      [routerLink]="['/knowledge', article.id, 'edit']">
+                      [routerLink]="['/knowledge/edit', article.id]">
                 <mat-icon>edit</mat-icon>
                 Edit
               </button>
