@@ -94,7 +94,34 @@ export class ArticleListComponent {
   }
 
   getArticlePreview(content: string): string {
-    return content.length > 200 ? content.substring(0, 200) + '...' : content;
+    // Remove HTML tags and extract text content
+    const textContent = content.replace(/<[^>]*>/g, '');
+    // Remove base64 image data if present
+    const cleanContent = textContent.replace(/data:image\/[^;]+;base64,[A-Za-z0-9+/=]+/g, '');
+    // Remove extra whitespace
+    const trimmedContent = cleanContent.replace(/\s+/g, ' ').trim();
+    
+    return trimmedContent.length > 200 ? trimmedContent.substring(0, 200) + '...' : trimmedContent;
+  }
+
+  getImageUrl(article: SimpleArticle): string | null {
+    // First check if there's a thumbnail URL
+    if (article.thumbnailUrl) {
+      return article.thumbnailUrl;
+    }
+    
+    // If no thumbnail, check for image URL
+    if (article.imageUrl) {
+      return article.imageUrl;
+    }
+    
+    // Try to extract first image from content
+    const imageMatch = article.content.match(/<img[^>]+src="([^"]+)"/);
+    if (imageMatch) {
+      return imageMatch[1];
+    }
+    
+    return null;
   }
 
   formatDate(date: Date): string {
@@ -103,5 +130,12 @@ export class ArticleListComponent {
       month: 'short',
       day: 'numeric'
     });
+  }
+
+  onImageError(event: Event): void {
+    const imgElement = event.target as HTMLImageElement;
+    if (imgElement) {
+      imgElement.style.display = 'none';
+    }
   }
 }

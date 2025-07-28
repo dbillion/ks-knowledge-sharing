@@ -13,6 +13,8 @@ export interface SimpleArticle {
   isPublished: boolean;
   createdAt: Date;
   updatedAt: Date;
+  imageUrl?: string;
+  thumbnailUrl?: string;
 }
 
 @Injectable({
@@ -24,35 +26,44 @@ export class KnowledgeService {
     {
       id: '1',
       title: 'Getting Started with Angular Signals',
-      content: 'Angular Signals provide a reactive programming model that improves performance and developer experience...',
+      content: '<p>Angular Signals provide a reactive programming model that improves performance and developer experience. This comprehensive guide covers everything you need to know about implementing signals in your Angular applications.</p><p>Signals are a new reactive primitive that can be used to manage state in Angular applications. They provide a more efficient way to handle reactive updates compared to traditional observables in many scenarios.</p>',
+      excerpt: 'Angular Signals provide a reactive programming model that improves performance and developer experience.',
       authorId: 'user1',
       categoryId: 'cat1',
       tags: ['angular', 'signals', 'reactive'],
       isPublished: true,
       createdAt: new Date('2024-01-15'),
-      updatedAt: new Date('2024-01-15')
+      updatedAt: new Date('2024-01-15'),
+      thumbnailUrl: 'https://via.placeholder.com/300x200/4CAF50/white?text=Angular+Signals',
+      imageUrl: 'https://via.placeholder.com/800x400/4CAF50/white?text=Angular+Signals+Guide'
     },
     {
       id: '2',
       title: 'TypeScript Best Practices',
-      content: 'This article covers TypeScript best practices for enterprise applications...',
+      content: '<p>This article covers TypeScript best practices for enterprise applications, including proper type definitions, code organization, and performance optimization techniques.</p><p>Learn how to write maintainable and scalable TypeScript code that follows industry standards and best practices.</p>',
+      excerpt: 'This article covers TypeScript best practices for enterprise applications.',
       authorId: 'user2',
       categoryId: 'cat2',
       tags: ['typescript', 'best-practices', 'development'],
       isPublished: true,
       createdAt: new Date('2024-01-10'),
-      updatedAt: new Date('2024-01-12')
+      updatedAt: new Date('2024-01-12'),
+      thumbnailUrl: 'https://via.placeholder.com/300x200/2196F3/white?text=TypeScript+Tips',
+      imageUrl: 'https://via.placeholder.com/800x400/2196F3/white?text=TypeScript+Best+Practices'
     },
     {
       id: '3',
       title: 'Angular Material Design Guidelines',
-      content: 'Learn how to implement Material Design in your Angular applications...',
+      content: '<p>Learn how to implement Material Design in your Angular applications with proper component usage, theming, and accessibility considerations.</p><p>This guide provides comprehensive examples and best practices for creating beautiful, accessible user interfaces.</p>',
+      excerpt: 'Learn how to implement Material Design in your Angular applications.',
       authorId: 'user1',
       categoryId: 'cat3',
       tags: ['angular', 'material', 'ui'],
       isPublished: false,
       createdAt: new Date('2024-01-08'),
-      updatedAt: new Date('2024-01-08')
+      updatedAt: new Date('2024-01-08'),
+      thumbnailUrl: 'https://via.placeholder.com/300x200/FF9800/white?text=Material+Design',
+      imageUrl: 'https://via.placeholder.com/800x400/FF9800/white?text=Material+Design+Guide'
     }
   ]);
 
