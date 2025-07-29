@@ -18,6 +18,8 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { SearchService, SearchFilters } from '../../../core/services/search.service';
 import { KnowledgeService, SimpleArticle } from '../../../core/services/knowledge.service';
 import { CategoryService, SimpleCategory } from '../../../core/services/category.service';
+import { SearchResultsComponent } from '../search-results/search-results';
+import { SearchAutocompleteService, AutocompleteResult } from '../../../core/services/search-autocomplete.service';
 
 @Component({
   selector: 'app-search-interface',
@@ -38,7 +40,8 @@ import { CategoryService, SimpleCategory } from '../../../core/services/category
     MatSelectModule,
     MatCheckboxModule,
     MatAutocompleteModule,
-    MatListModule
+    MatListModule,
+    SearchResultsComponent
   ],
   templateUrl: './search-interface.html',
   styleUrl: './search-interface.scss'
@@ -48,6 +51,7 @@ export class SearchInterfaceComponent {
   private knowledgeService = inject(KnowledgeService);
   private categoryService = inject(CategoryService);
   private fb = inject(FormBuilder);
+  private autocompleteService = inject(SearchAutocompleteService);
 
   // Search form controls
   searchControl = new FormControl('');
@@ -66,6 +70,10 @@ export class SearchInterfaceComponent {
   availableTags = signal<string[]>([]);
   showFilters = signal(false);
   showHistory = signal(false);
+  
+  // Autocomplete
+  autocompleteSuggestions = signal<AutocompleteResult[]>([]);
+  showAutocomplete = signal(false);
   
   // Popular searches for suggestions
   popularSearches = this.searchService.getPopularSearches();
@@ -100,8 +108,26 @@ export class SearchInterfaceComponent {
       .subscribe(query => {
         if (query && query.trim()) {
           this.searchService.search(query.trim());
+          this.showAutocomplete.set(false);
         } else {
           this.searchService.clearSearch();
+        }
+      });
+
+    // Setup autocomplete
+    this.searchControl.valueChanges
+      .pipe(
+        debounceTime(200),
+        distinctUntilChanged()
+      )
+      .subscribe(query => {
+        if (query && query.length >= 2) {
+          this.autocompleteService.getSuggestions(query).subscribe(suggestions => {
+            this.autocompleteSuggestions.set(suggestions);
+            this.showAutocomplete.set(true);
+          });
+        } else {
+          this.showAutocomplete.set(false);
         }
       });
   }
@@ -110,7 +136,41 @@ export class SearchInterfaceComponent {
     const query = this.searchControl.value;
     if (query && query.trim()) {
       this.searchService.search(query.trim());
+      this.autocompleteService.addToSearchHistory(query.trim());
+      this.autocompleteService.updatePopularSearches(query.trim());
+      this.showAutocomplete.set(false);
     }
+  }
+
+  onAutocompleteSelect(suggestion: AutocompleteResult): void {
+    if (suggestion.type === 'article' && suggestion.metadata?.id) {
+      // Navigate to article directly
+      // In a real app, you'd use Router here
+      console.log('Navigate to article:', suggestion.metadata.id);
+    } else {
+      // Use as search query
+      this.searchControl.setValue(suggestion.text);
+      this.searchService.search(suggestion.text);
+      this.autocompleteService.addToSearchHistory(suggestion.text);
+    }
+    this.showAutocomplete.set(false);
+  }
+
+  onSearchInputFocus(): void {
+    const query = this.searchControl.value;
+    if (!query || query.length < 2) {
+      this.autocompleteService.getPopularSuggestions().forEach(suggestion => {
+        this.autocompleteSuggestions.update(current => [...current, suggestion]);
+      });
+      this.showAutocomplete.set(true);
+    }
+  }
+
+  onSearchInputBlur(): void {
+    // Small delay to allow clicking on autocomplete suggestions
+    setTimeout(() => {
+      this.showAutocomplete.set(false);
+    }, 200);
   }
 
   onCategoryToggle(categoryId: string): void {

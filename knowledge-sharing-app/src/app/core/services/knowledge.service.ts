@@ -104,12 +104,98 @@ export class KnowledgeService {
 
   // Search articles
   searchArticles(query: string): Observable<SimpleArticle[]> {
-    const searchResults = this.mockArticles().filter(article =>
-      article.title.toLowerCase().includes(query.toLowerCase()) ||
-      article.content.toLowerCase().includes(query.toLowerCase()) ||
-      article.tags.some((tag: string) => tag.toLowerCase().includes(query.toLowerCase()))
-    );
+    const searchResults = this.mockArticles().filter(article => {
+      const searchTerm = query.toLowerCase();
+      return (
+        article.title.toLowerCase().includes(searchTerm) ||
+        article.content.toLowerCase().includes(searchTerm) ||
+        (article.excerpt && article.excerpt.toLowerCase().includes(searchTerm)) ||
+        article.tags.some((tag: string) => tag.toLowerCase().includes(searchTerm))
+      );
+    });
     return of(searchResults).pipe(delay(600));
+  }
+
+  // Advanced search with multiple criteria
+  advancedSearch(criteria: {
+    query?: string;
+    categories?: string[];
+    tags?: string[];
+    authors?: string[];
+    publishedOnly?: boolean;
+    dateFrom?: Date;
+    dateTo?: Date;
+  }): Observable<SimpleArticle[]> {
+    let results = this.mockArticles();
+    
+    // Filter by query
+    if (criteria.query) {
+      const searchTerm = criteria.query.toLowerCase();
+      results = results.filter(article =>
+        article.title.toLowerCase().includes(searchTerm) ||
+        article.content.toLowerCase().includes(searchTerm) ||
+        (article.excerpt && article.excerpt.toLowerCase().includes(searchTerm)) ||
+        article.tags.some((tag: string) => tag.toLowerCase().includes(searchTerm))
+      );
+    }
+    
+    // Filter by categories
+    if (criteria.categories && criteria.categories.length > 0) {
+      results = results.filter(article => criteria.categories!.includes(article.categoryId));
+    }
+    
+    // Filter by tags
+    if (criteria.tags && criteria.tags.length > 0) {
+      results = results.filter(article =>
+        criteria.tags!.some(tag => article.tags.includes(tag))
+      );
+    }
+    
+    // Filter by authors
+    if (criteria.authors && criteria.authors.length > 0) {
+      results = results.filter(article => criteria.authors!.includes(article.authorId));
+    }
+    
+    // Filter by published status
+    if (criteria.publishedOnly) {
+      results = results.filter(article => article.isPublished);
+    }
+    
+    // Filter by date range
+    if (criteria.dateFrom) {
+      results = results.filter(article => article.createdAt >= criteria.dateFrom!);
+    }
+    
+    if (criteria.dateTo) {
+      results = results.filter(article => article.createdAt <= criteria.dateTo!);
+    }
+    
+    return of(results).pipe(delay(400));
+  }
+
+  // Get search suggestions based on existing content
+  getSearchSuggestions(query: string): Observable<string[]> {
+    const suggestions = new Set<string>();
+    const searchTerm = query.toLowerCase();
+    
+    this.mockArticles().forEach(article => {
+      // Add matching tags
+      article.tags.forEach(tag => {
+        if (tag.toLowerCase().includes(searchTerm) && tag.toLowerCase() !== searchTerm) {
+          suggestions.add(tag);
+        }
+      });
+      
+      // Add partial title matches
+      const titleWords = article.title.toLowerCase().split(' ');
+      titleWords.forEach(word => {
+        if (word.includes(searchTerm) && word !== searchTerm && word.length > 3) {
+          suggestions.add(word);
+        }
+      });
+    });
+    
+    return of(Array.from(suggestions).slice(0, 8)).pipe(delay(200));
   }
 
   // Create new article

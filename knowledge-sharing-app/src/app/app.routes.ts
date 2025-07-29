@@ -82,7 +82,16 @@ export const routes: Routes = [
   {
     path: 'search',
     canActivate: [authGuard],
-    loadComponent: () => import('./features/search/search-interface/search-interface').then(m => m.SearchInterfaceComponent)
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./features/search/search-page').then(m => m.SearchPageComponent)
+      },
+      {
+        path: 'advanced',
+        loadComponent: () => import('./features/search/advanced-search/advanced-search').then(m => m.AdvancedSearchComponent)
+      }
+    ]
   },
   
   // Categories routes (admin only)

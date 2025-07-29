@@ -7,14 +7,43 @@
 
   <!-- Main Search Bar -->
   <div class="search-bar-container">
-    <mat-form-field appearance="outline" class="search-field">
-      <mat-label>Search knowledge base...</mat-label>
-      <input matInput 
-             [formControl]="searchControl" 
-             placeholder="Enter keywords, topics, or questions"
-             (keyup.enter)="onSearch()">
-      <mat-icon matSuffix>search</mat-icon>
-    </mat-form-field>
+    <div class="search-input-wrapper">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Search knowledge base...</mat-label>
+        <input matInput 
+               [formControl]="searchControl" 
+               placeholder="Enter keywords, topics, or questions"
+               (keyup.enter)="onSearch()"
+               (focus)="onSearchInputFocus()"
+               (blur)="onSearchInputBlur()">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+      
+      <!-- Autocomplete Dropdown -->
+      @if (showAutocomplete() && autocompleteSuggestions().length > 0) {
+        <div class="autocomplete-dropdown">
+          @for (suggestion of autocompleteSuggestions(); track suggestion.text) {
+            <div class="autocomplete-item" 
+                 (click)="onAutocompleteSelect(suggestion)">
+              <mat-icon class="suggestion-icon">{{ suggestion.icon }}</mat-icon>
+              <div class="suggestion-content">
+                <span class="suggestion-text">{{ suggestion.text }}</span>
+                @if (suggestion.description) {
+                  <small class="suggestion-description">{{ suggestion.description }}</small>
+                }
+              </div>
+              <mat-icon class="suggestion-action">
+                @if (suggestion.type === 'article') {
+                  arrow_forward
+                } @else {
+                  search
+                }
+              </mat-icon>
+            </div>
+          }
+        </div>
+      }
+    </div>
     
     <button mat-raised-button 
             color="primary" 
@@ -187,61 +216,6 @@
     </div>
   }
 
-  <!-- Search Results -->
-  @if (hasResults()) {
-    <div class="search-results">
-      @for (article of searchResults().articles; track article.id) {
-        <mat-card class="result-card" [routerLink]="['/articles', article.id]">
-          <mat-card-header>
-            <mat-card-title>{{ article.title }}</mat-card-title>
-            <mat-card-subtitle>
-              {{ getCategoryName(article.categoryId) }} • 
-              {{ formatDate(article.updatedAt) }}
-            </mat-card-subtitle>
-          </mat-card-header>
-          
-          <mat-card-content>
-            <p class="article-preview">{{ getArticlePreview(article.content) }}</p>
-            
-            @if (article.tags.length > 0) {
-              <div class="article-tags">
-                @for (tag of article.tags; track tag) {
-                  <mat-chip class="article-tag">{{ tag }}</mat-chip>
-                }
-              </div>
-            }
-          </mat-card-content>
-          
-          <mat-card-actions>
-            <button mat-button color="primary">
-              <mat-icon>visibility</mat-icon>
-              View Article
-            </button>
-          </mat-card-actions>
-        </mat-card>
-      }
-    </div>
-  }
-
-  <!-- No Results State -->
-  @if (hasQuery() && !isSearching() && !hasResults()) {
-    <div class="no-results">
-      <mat-icon class="no-results-icon">search_off</mat-icon>
-      <h3>No results found</h3>
-      <p>Try adjusting your search terms or filters</p>
-      
-      @if (searchResults().suggestions.length > 0) {
-        <div class="suggestions">
-          <p>Did you mean:</p>
-          <div class="suggestion-chips">
-            @for (suggestion of searchResults().suggestions; track suggestion) {
-              <mat-chip (click)="searchControl.setValue(suggestion); onSearch()">
-                {{ suggestion }}
-              </mat-chip>
-            }
-          </div>
-        </div>
-      }
-    </div>
-  }
+  <!-- Search Results Component -->
+  <app-search-results></app-search-results>
 </div>

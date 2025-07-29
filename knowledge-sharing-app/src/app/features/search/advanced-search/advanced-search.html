@@ -1,0 +1,232 @@
+<div class="advanced-search-container">
+  <!-- Header -->
+  <div class="search-header">
+    <h1>Advanced Search</h1>
+    <p class="search-subtitle">Find exactly what you're looking for with detailed search criteria</p>
+  </div>
+
+  <!-- Search Form -->
+  <mat-card class="search-form-card">
+    <mat-card-header>
+      <mat-card-title>Search Criteria</mat-card-title>
+      <mat-card-subtitle>Configure your search parameters</mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <form [formGroup]="searchForm" class="search-form">
+        <!-- Query Input -->
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Search Query</mat-label>
+            <input matInput 
+                   formControlName="query" 
+                   placeholder="Enter keywords, phrases, or questions"
+                   (keyup.enter)="onSearch()">
+            <mat-icon matSuffix>search</mat-icon>
+            <mat-hint>Search in titles, content, and tags</mat-hint>
+          </mat-form-field>
+        </div>
+
+        <!-- Categories and Tags Row -->
+        <div class="form-row two-column">
+          <!-- Categories -->
+          <mat-form-field appearance="outline">
+            <mat-label>Categories</mat-label>
+            <mat-select formControlName="categories" multiple>
+              @for (category of categories(); track category.id) {
+                <mat-option [value]="category.id">{{ category.name }}</mat-option>
+              }
+            </mat-select>
+            <mat-hint>Select one or more categories</mat-hint>
+          </mat-form-field>
+
+          <!-- Tags -->
+          <mat-form-field appearance="outline">
+            <mat-label>Tags</mat-label>
+            <mat-select formControlName="tags" multiple>
+              @for (tag of availableTags(); track tag) {
+                <mat-option [value]="tag">{{ tag }}</mat-option>
+              }
+            </mat-select>
+            <mat-hint>Filter by specific tags</mat-hint>
+          </mat-form-field>
+        </div>
+
+        <!-- Authors and Status Row -->
+        <div class="form-row two-column">
+          <!-- Authors -->
+          <mat-form-field appearance="outline">
+            <mat-label>Authors</mat-label>
+            <mat-select formControlName="authors" multiple>
+              @for (author of availableAuthors(); track author) {
+                <mat-option [value]="author">{{ author }}</mat-option>
+              }
+            </mat-select>
+            <mat-hint>Search by specific authors</mat-hint>
+          </mat-form-field>
+
+          <!-- Published Status -->
+          <div class="checkbox-container">
+            <mat-checkbox formControlName="publishedOnly">
+              Published articles only
+            </mat-checkbox>
+            <small>Uncheck to include draft articles</small>
+          </div>
+        </div>
+
+        <!-- Date Range -->
+        <div class="form-row">
+          <h4>Date Range</h4>
+          <div class="date-range two-column">
+            <mat-form-field appearance="outline">
+              <mat-label>From Date</mat-label>
+              <input matInput 
+                     [matDatepicker]="fromPicker" 
+                     formControlName="dateFrom"
+                     placeholder="Select start date">
+              <mat-datepicker-toggle matIconSuffix [for]="fromPicker"></mat-datepicker-toggle>
+              <mat-datepicker #fromPicker></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>To Date</mat-label>
+              <input matInput 
+                     [matDatepicker]="toPicker" 
+                     formControlName="dateTo"
+                     placeholder="Select end date">
+              <mat-datepicker-toggle matIconSuffix [for]="toPicker"></mat-datepicker-toggle>
+              <mat-datepicker #toPicker></mat-datepicker>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Content Length -->
+        <div class="form-row">
+          <h4>Content Length (characters)</h4>
+          <div class="slider-container">
+            <div class="slider-row">
+              <span>Min:</span>
+              <mat-slider 
+                min="0" 
+                max="20000" 
+                step="500" 
+                class="content-slider">
+                <input matSliderThumb formControlName="contentLengthMin">
+              </mat-slider>
+              <span>{{ searchForm.get('contentLengthMin')?.value }}</span>
+            </div>
+            
+            <div class="slider-row">
+              <span>Max:</span>
+              <mat-slider 
+                min="0" 
+                max="20000" 
+                step="500" 
+                class="content-slider">
+                <input matSliderThumb formControlName="contentLengthMax">
+              </mat-slider>
+              <span>{{ searchForm.get('contentLengthMax')?.value }}</span>
+            </div>
+          </div>
+        </div>
+      </form>
+    </mat-card-content>
+
+    <!-- Search Actions -->
+    <mat-card-actions class="search-actions">
+      <button mat-raised-button 
+              color="primary" 
+              (click)="onSearch()"
+              [disabled]="!searchForm.valid">
+        <mat-icon>search</mat-icon>
+        Search
+      </button>
+      
+      <button mat-stroked-button (click)="onReset()">
+        <mat-icon>refresh</mat-icon>
+        Reset
+      </button>
+      
+      <button mat-stroked-button 
+              (click)="onSaveSearch()"
+              [disabled]="!hasResults()">
+        <mat-icon>bookmark</mat-icon>
+        Save Search
+      </button>
+      
+      <button mat-stroked-button 
+              (click)="exportResults()"
+              [disabled]="!hasResults()">
+        <mat-icon>download</mat-icon>
+        Export Results
+      </button>
+    </mat-card-actions>
+  </mat-card>
+
+  <!-- Search Results -->
+  @if (showResults()) {
+    <div class="results-section">
+      @if (isSearching()) {
+        <div class="loading-container">
+          <mat-spinner diameter="40"></mat-spinner>
+          <p>Searching with advanced criteria...</p>
+        </div>
+      } @else {
+        <!-- Results Summary -->
+        <div class="results-summary">
+          <h3>Search Results</h3>
+          <p>Found {{ getResultCount() }} articles matching your criteria</p>
+        </div>
+
+        <!-- Results Display -->
+        <app-search-results [articles]="searchResults()"></app-search-results>
+      }
+    </div>
+  }
+
+  <!-- Help Section -->
+  <mat-card class="help-section">
+    <mat-card-header>
+      <mat-card-title>Search Tips</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="tips-grid">
+        <div class="tip">
+          <mat-icon>lightbulb</mat-icon>
+          <div>
+            <h4>Query Tips</h4>
+            <ul>
+              <li>Use quotes for exact phrases: "exact phrase"</li>
+              <li>Use multiple keywords for broader results</li>
+              <li>Search terms are case-insensitive</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="tip">
+          <mat-icon>filter_list</mat-icon>
+          <div>
+            <h4>Filter Tips</h4>
+            <ul>
+              <li>Multiple categories = OR logic (any match)</li>
+              <li>Multiple tags = OR logic (any match)</li>
+              <li>Combine filters for more precise results</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="tip">
+          <mat-icon>date_range</mat-icon>
+          <div>
+            <h4>Date Tips</h4>
+            <ul>
+              <li>Leave dates empty to search all time</li>
+              <li>Use date ranges for time-specific content</li>
+              <li>Dates are based on article creation</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

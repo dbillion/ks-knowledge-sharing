@@ -1,0 +1,153 @@
+<div class="search-results-container">
+  <!-- Loading State -->
+  @if (isSearching()) {
+    <div class="loading-container">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p>Searching knowledge base...</p>
+    </div>
+  }
+
+  <!-- Results Summary -->
+  @if (!isSearching() && hasQuery()) {
+    <div class="results-summary">
+      <h2>{{ resultSummary() }}</h2>
+      @if (searchResults().suggestions.length > 0) {
+        <div class="suggestions">
+          <span>Did you mean:</span>
+          @for (suggestion of searchResults().suggestions; track suggestion) {
+            <mat-chip class="suggestion-chip" (click)="searchService.search(suggestion)">
+              {{ suggestion }}
+            </mat-chip>
+          }
+        </div>
+      }
+    </div>
+  }
+
+  <!-- No Results State -->
+  @if (hasNoResults()) {
+    <div class="no-results">
+      <mat-icon class="no-results-icon">search_off</mat-icon>
+      <h3>No articles found</h3>
+      <p>Try adjusting your search terms or filters to find what you're looking for.</p>
+      <div class="suggestions-container">
+        <h4>Suggestions:</h4>
+        <ul>
+          <li>Check your spelling</li>
+          <li>Use more general keywords</li>
+          <li>Remove some filters</li>
+          <li>Try searching for related topics</li>
+        </ul>
+      </div>
+    </div>
+  }
+
+  <!-- Search Results -->
+  @if (!isSearching() && hasResults()) {
+    <div class="results-grid">
+      @for (article of displayedArticles(); track trackByArticleId($index, article)) {
+        <mat-card class="article-card" [routerLink]="['/articles', article.id]">
+          <!-- Article Image -->
+          <div class="article-image-container">
+            <img 
+              [src]="getImageUrl(article)" 
+              [alt]="article.title"
+              (error)="onImageError($event, article)"
+              class="article-image"
+              loading="lazy">
+            
+            <!-- Article Status Badge -->
+            @if (!article.isPublished) {
+              <mat-chip class="status-badge draft">Draft</mat-chip>
+            }
+          </div>
+
+          <mat-card-content class="article-content">
+            <!-- Article Title -->
+            <h3 class="article-title" [innerHTML]="highlightSearchTerm(article.title, currentQuery())"></h3>
+
+            <!-- Article Metadata -->
+            <div class="article-meta">
+              <span class="author">
+                <mat-icon>person</mat-icon>
+                {{ article.authorId }}
+              </span>
+              <span class="date">
+                <mat-icon>schedule</mat-icon>
+                {{ formatDate(article.createdAt) }}
+              </span>
+              <span class="reading-time">
+                <mat-icon>schedule</mat-icon>
+                {{ getReadingTime(article.content) }} min read
+              </span>
+            </div>
+
+            <!-- Article Preview -->
+            <p class="article-preview" [innerHTML]="highlightSearchTerm(getArticlePreview(article.content), currentQuery())"></p>
+
+            <!-- Tags -->
+            @if (article.tags.length > 0) {
+              <div class="article-tags">
+                @for (tag of article.tags.slice(0, 3); track tag) {
+                  <mat-chip class="tag-chip">{{ tag }}</mat-chip>
+                }
+                @if (article.tags.length > 3) {
+                  <mat-chip class="more-tags" [matTooltip]="'More tags: ' + article.tags.slice(3).join(', ')">
+                    +{{ article.tags.length - 3 }}
+                  </mat-chip>
+                }
+              </div>
+            }
+          </mat-card-content>
+
+          <!-- Card Actions -->
+          <mat-card-actions class="article-actions">
+            <button mat-button [routerLink]="['/articles', article.id]">
+              <mat-icon>visibility</mat-icon>
+              Read More
+            </button>
+            <button mat-icon-button 
+                    (click)="shareArticle(article); $event.stopPropagation()" 
+                    matTooltip="Share article">
+              <mat-icon>share</mat-icon>
+            </button>
+            <button mat-icon-button 
+                    matTooltip="Bookmark article"
+                    (click)="$event.stopPropagation()">
+              <mat-icon>bookmark_border</mat-icon>
+            </button>
+          </mat-card-actions>
+        </mat-card>
+      }
+    </div>
+
+    <!-- Pagination -->
+    @if (totalArticles() > pageSize()) {
+      <div class="pagination-container">
+        <mat-paginator
+          [length]="totalArticles()"
+          [pageSize]="pageSize()"
+          [pageIndex]="currentPage()"
+          [pageSizeOptions]="[5, 10, 20, 50]"
+          [showFirstLastButtons]="true"
+          (page)="onPageChange($event)"
+          aria-label="Search results pagination">
+        </mat-paginator>
+      </div>
+    }
+  }
+
+  <!-- Quick Stats -->
+  @if (!isSearching() && hasResults()) {
+    <div class="quick-stats">
+      <div class="stat">
+        <mat-icon>article</mat-icon>
+        <span>{{ totalArticles() }} articles</span>
+      </div>
+      <div class="stat">
+        <mat-icon>schedule</mat-icon>
+        <span>{{ searchResults().queryTime }}ms</span>
+      </div>
+    </div>
+  }
+</div>

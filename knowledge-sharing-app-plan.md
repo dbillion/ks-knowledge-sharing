@@ -198,10 +198,10 @@ export interface SearchResult {
 ### 4. Technical Implementation Details
 
 #### Frontend Stack
-- **Angular 17+** with standalone components
+- **Angular 20+** with standalone components
 - **Angular Material** for UI components
-- **NgRx** for state management
-- **RxJS** for reactive programming
+- **Angular Signals** for reactive state management
+- **RxJS** for reactive programming and HTTP operations
 - **Socket.io-client** for real-time features
 - **Quill.js** for rich text editing
 - **Angular Flex Layout** for responsive design
@@ -215,32 +215,93 @@ export interface SearchResult {
 
 #### Services Implementation
 
-**AuthService:**
+**AuthService (Signal-based):**
 ```typescript
-- login(credentials: LoginCredentials): Observable<User>
-- register(userData: RegisterData): Observable<User>
-- logout(): void
-- refreshToken(): Observable<string>
-- getCurrentUser(): Observable<User>
-- updateProfile(profile: UserProfile): Observable<User>
+export class AuthService {
+  // Signals for reactive state management
+  private currentUser = signal<User | null>(null);
+  private isAuthenticated = signal<boolean>(false);
+  private isLoading = signal<boolean>(false);
+  
+  // Computed signals
+  readonly user = this.currentUser.asReadonly();
+  readonly authenticated = this.isAuthenticated.asReadonly();
+  readonly loading = this.isLoading.asReadonly();
+  readonly isAdmin = computed(() => this.currentUser()?.role === UserRole.ADMIN);
+  readonly isEditor = computed(() => this.currentUser()?.role === UserRole.EDITOR || this.isAdmin());
+  
+  // Methods
+  login(credentials: LoginCredentials): Observable<User>
+  register(userData: RegisterData): Observable<User>
+  logout(): void
+  refreshToken(): Observable<string>
+  getCurrentUser(): Observable<User>
+  updateProfile(profile: UserProfile): Observable<User>
+}
 ```
 
-**KnowledgeService:**
+**KnowledgeService (Signal-based):**
 ```typescript
-- getArticles(params: ArticleParams): Observable<PaginatedResult<KnowledgeArticle>>
-- getArticle(id: string): Observable<KnowledgeArticle>
-- createArticle(article: ArticleCreate): Observable<KnowledgeArticle>
-- updateArticle(id: string, article: ArticleUpdate): Observable<KnowledgeArticle>
-- deleteArticle(id: string): Observable<void>
-- uploadAttachment(file: File): Observable<Attachment>
+export class KnowledgeService {
+  // Signal-based state
+  private articles = signal<KnowledgeArticle[]>([]);
+  private selectedArticle = signal<KnowledgeArticle | null>(null);
+  private isLoading = signal<boolean>(false);
+  private searchResults = signal<SearchResult | null>(null);
+  
+  // Computed signals
+  readonly allArticles = this.articles.asReadonly();
+  readonly currentArticle = this.selectedArticle.asReadonly();
+  readonly loading = this.isLoading.asReadonly();
+  readonly publishedArticles = computed(() => 
+    this.articles().filter(article => article.isPublished)
+  );
+  readonly articlesByCategory = computed(() => {
+    const articles = this.articles();
+    return articles.reduce((acc, article) => {
+      const categoryId = article.category.id;
+      if (!acc[categoryId]) acc[categoryId] = [];
+      acc[categoryId].push(article);
+      return acc;
+    }, {} as Record<string, KnowledgeArticle[]>);
+  });
+  
+  // Methods
+  getArticles(params: ArticleParams): Observable<PaginatedResult<KnowledgeArticle>>
+  getArticle(id: string): Observable<KnowledgeArticle>
+  createArticle(article: ArticleCreate): Observable<KnowledgeArticle>
+  updateArticle(id: string, article: ArticleUpdate): Observable<KnowledgeArticle>
+  deleteArticle(id: string): Observable<void>
+  uploadAttachment(file: File): Observable<Attachment>
+}
 ```
 
-**SearchService:**
+**SearchService (Signal-based):**
 ```typescript
-- search(query: string, filters: SearchFilters): Observable<SearchResult>
-- getSuggestions(query: string): Observable<string[]>
-- saveSearch(search: SavedSearch): Observable<void>
-- getSavedSearches(): Observable<SavedSearch[]>
+export class SearchService {
+  // Signal-based state
+  private searchQuery = signal<string>('');
+  private searchResults = signal<SearchResult | null>(null);
+  private searchFilters = signal<SearchFilters>({});
+  private isSearching = signal<boolean>(false);
+  private savedSearches = signal<SavedSearch[]>([]);
+  
+  // Computed signals
+  readonly query = this.searchQuery.asReadonly();
+  readonly results = this.searchResults.asReadonly();
+  readonly filters = this.searchFilters.asReadonly();
+  readonly searching = this.isSearching.asReadonly();
+  readonly searches = this.savedSearches.asReadonly();
+  readonly hasResults = computed(() => 
+    this.searchResults()?.articles.length > 0
+  );
+  
+  // Methods
+  search(query: string, filters: SearchFilters): Observable<SearchResult>
+  getSuggestions(query: string): Observable<string[]>
+  saveSearch(search: SavedSearch): Observable<void>
+  getSavedSearches(): Observable<SavedSearch[]>
+}
 ```
 
 ### 5. Responsive Design Strategy
@@ -268,7 +329,7 @@ export interface SearchResult {
 
 #### Caching Strategy
 - HTTP caching with interceptors
-- NgRx entity caching
+- Angular Signals-based caching
 - Image lazy loading
 - Service worker integration
 
@@ -435,8 +496,8 @@ ng serve
 # Angular Material and CDK
 ng add @angular/material
 
-# NgRx for state management
-ng add @ngrx/store @ngrx/effects @ngrx/store-devtools
+# Angular Signals (built-in to Angular 20+)
+# No additional installation needed for signals
 
 # Angular Flex Layout
 npm install @angular/flex-layout
@@ -480,7 +541,7 @@ ng generate service core/services/category
 3. Configure Angular Material
 4. Implement authentication service
 5. Create basic article components
-6. Set up NgRx store
+6. Set up Angular Signals architecture
 7. Configure routing and guards
 8. Implement search functionality
 9. Add responsive design
