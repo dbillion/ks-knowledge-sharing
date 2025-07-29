@@ -1,6 +1,6 @@
 ---
 description: 'Debug your application to find and fix a bug'
-tools: ['codebase', 'readFiles', 'editFiles', 'githubRepo', 'runCommands', 'fetch', 'search', 'usages', 'findTestFiles', 'get_errors', 'test_failure', 'run_in_terminal', 'get_terminal_output']
+tools: ['changes', 'codebase', 'editFiles', 'extensions', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runNotebooks', 'runTasks', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'pylance mcp server', 'zapier mcp', 'context 7', 'sequential-thinking', 'github', 'Framelink Figma MCP', 'taskmaster-ai', 'exa', 'memory', '@21st-dev/magic', 'n8n-mcp', 'zapier', 'review', 'reviewStaged', 'reviewUnstaged', 'dtdUri', 'activePullRequest', 'copilotCodingAgent', 'exportMarp', 'configurePythonEnvironment', 'getPythonEnvironmentInfo', 'getPythonExecutableCommand', 'installPythonPackage', 'configureNotebook', 'installNotebookPackages', 'listNotebookPackages', 'websearch']
 ---
 
 # Debug Mode Instructions

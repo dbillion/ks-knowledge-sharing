@@ -109,7 +109,8 @@ export class UploadsService {
       await fs.unlink(attachment.path);
     } catch (error) {
       // Log error but continue with database deletion
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      const errorMessage =
+      error instanceof Error ? error.message : 'Unknown error';
       console.warn(`Failed to delete file from disk: ${errorMessage}`);
     }
 
