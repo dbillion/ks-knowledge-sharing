@@ -8,15 +8,19 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UploadsModule = void 0;
 const common_1 = require("@nestjs/common");
+const typeorm_1 = require("@nestjs/typeorm");
 const uploads_controller_1 = require("./uploads.controller");
 const uploads_service_1 = require("./uploads.service");
+const attachment_entity_1 = require("../../database/entities/attachment.entity");
 let UploadsModule = class UploadsModule {
 };
 exports.UploadsModule = UploadsModule;
 exports.UploadsModule = UploadsModule = __decorate([
     (0, common_1.Module)({
+        imports: [typeorm_1.TypeOrmModule.forFeature([attachment_entity_1.Attachment])],
         controllers: [uploads_controller_1.UploadsController],
-        providers: [uploads_service_1.UploadsService]
+        providers: [uploads_service_1.UploadsService],
+        exports: [uploads_service_1.UploadsService],
     })
 ], UploadsModule);
 //# sourceMappingURL=uploads.module.js.map

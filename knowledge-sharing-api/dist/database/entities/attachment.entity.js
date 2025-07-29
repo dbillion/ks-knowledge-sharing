@@ -61,8 +61,8 @@ __decorate([
     __metadata("design:type", Date)
 ], Attachment.prototype, "createdAt", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", String)
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", Object)
 ], Attachment.prototype, "articleId", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => article_entity_1.Article, (article) => article.attachments),
@@ -70,13 +70,13 @@ __decorate([
     __metadata("design:type", article_entity_1.Article)
 ], Attachment.prototype, "article", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", String)
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", Object)
 ], Attachment.prototype, "uploadedById", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => user_entity_1.User, (user) => user.attachments),
+    (0, typeorm_1.ManyToOne)(() => user_entity_1.User, (user) => user.attachments, { nullable: true }),
     (0, typeorm_1.JoinColumn)({ name: 'uploadedById' }),
-    __metadata("design:type", user_entity_1.User)
+    __metadata("design:type", Object)
 ], Attachment.prototype, "uploadedBy", void 0);
 exports.Attachment = Attachment = __decorate([
     (0, typeorm_1.Entity)('attachments')

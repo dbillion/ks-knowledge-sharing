@@ -10,38 +10,82 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RegisterDto = void 0;
+const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
+const user_role_enum_1 = require("../../../common/enums/user-role.enum");
 class RegisterDto {
     username;
     email;
     password;
     firstName;
     lastName;
+    role;
 }
 exports.RegisterDto = RegisterDto;
 __decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'Username for the account',
+        example: 'johndoe123',
+        minLength: 3,
+        maxLength: 50,
+    }),
     (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.MinLength)(3),
     (0, class_validator_1.MaxLength)(50),
     __metadata("design:type", String)
 ], RegisterDto.prototype, "username", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'User email address',
+        example: 'john.doe@example.com',
+    }),
     (0, class_validator_1.IsEmail)(),
+    (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], RegisterDto.prototype, "email", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'User password',
+        example: 'SecurePassword123!',
+        minLength: 6,
+    }),
     (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.MinLength)(6),
     __metadata("design:type", String)
 ], RegisterDto.prototype, "password", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'User first name',
+        example: 'John',
+        minLength: 2,
+    }),
     (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.MinLength)(2),
     __metadata("design:type", String)
 ], RegisterDto.prototype, "firstName", void 0);
 __decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'User last name',
+        example: 'Doe',
+        minLength: 2,
+    }),
     (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.MinLength)(2),
     __metadata("design:type", String)
 ], RegisterDto.prototype, "lastName", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'User role',
+        example: user_role_enum_1.UserRole.EDITOR,
+        enum: user_role_enum_1.UserRole,
+        required: false,
+    }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], RegisterDto.prototype, "role", void 0);
 //# sourceMappingURL=register.dto.js.map

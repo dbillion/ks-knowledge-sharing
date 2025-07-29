@@ -6,13 +6,6 @@ function setupSwagger(app) {
     const config = new swagger_1.DocumentBuilder()
         .setTitle('Knowledge Sharing API')
         .setDescription('A comprehensive knowledge sharing platform API')
-        .setVersion('1.0')
-        .addTag('auth', 'Authentication endpoints')
-        .addTag('users', 'User management')
-        .addTag('articles', 'Article management')
-        .addTag('categories', 'Category management')
-        .addTag('search', 'Search functionality')
-        .addTag('uploads', 'File upload endpoints')
         .addBearerAuth({
         type: 'http',
         scheme: 'bearer',

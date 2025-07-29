@@ -9,8 +9,8 @@ export declare class Attachment {
     path: string;
     downloadCount: number;
     createdAt: Date;
-    articleId: string;
+    articleId: string | null;
     article: Article;
-    uploadedById: string;
-    uploadedBy: User;
+    uploadedById: string | null;
+    uploadedBy: User | null;
 }

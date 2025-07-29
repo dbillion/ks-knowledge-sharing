@@ -36,17 +36,17 @@ export class Attachment {
   createdAt: Date;
 
   // Relations
-  @Column()
-  articleId: string;
+  @Column({ nullable: true })
+  articleId: string | null;
 
   @ManyToOne(() => Article, (article) => article.attachments)
   @JoinColumn({ name: 'articleId' })
   article: Article;
 
-  @Column()
-  uploadedById: string;
+  @Column({ nullable: true })
+  uploadedById: string | null;
 
-  @ManyToOne(() => User, (user) => user.attachments)
+  @ManyToOne(() => User, (user) => user.attachments, { nullable: true })
   @JoinColumn({ name: 'uploadedById' })
-  uploadedBy: User;
+  uploadedBy: User | null;
 }

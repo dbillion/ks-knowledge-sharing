@@ -5,13 +5,13 @@ export function setupSwagger(app: INestApplication): void {
   const config = new DocumentBuilder()
     .setTitle('Knowledge Sharing API')
     .setDescription('A comprehensive knowledge sharing platform API')
-    .setVersion('1.0')
-    .addTag('auth', 'Authentication endpoints')
-    .addTag('users', 'User management')
-    .addTag('articles', 'Article management')
-    .addTag('categories', 'Category management')
-    .addTag('search', 'Search functionality')
-    .addTag('uploads', 'File upload endpoints')
+    // .setVersion('1.0')
+    // .addTag('auth', 'Authentication endpoints')
+    // .addTag('users', 'User management')
+    // .addTag('articles', 'Article management')
+    // .addTag('categories', 'Category management')
+    // .addTag('search', 'Search functionality')
+    // .addTag('uploads', 'File upload endpoints')
     .addBearerAuth(
       {
         type: 'http',
